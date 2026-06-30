@@ -1,0 +1,118 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
+import { Menu, Moon, PackageCheck, Search, Sun, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const NAV_LINKS = [
+  { href: "/services", label: "Services" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
+
+function Brand() {
+  return (
+    <span className="flex items-center gap-3">
+      <span className="relative grid h-10 w-10 place-items-center rounded-lg bg-brand-navy text-white shadow-sm">
+        <PackageCheck className="h-5 w-5" />
+        <span className="absolute -right-1 -top-1 h-3 w-3 rounded-sm bg-brand-orange" />
+      </span>
+      <span className="text-lg font-black tracking-normal text-foreground">
+        GO<span className="text-brand-orange">xpress</span> Way
+      </span>
+    </span>
+  );
+}
+
+export function NavHeader() {
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+
+  return (
+    <header className="sticky top-0 z-50 border-b bg-background/95 shadow-[0_10px_35px_rgba(7,22,45,0.06)] backdrop-blur-xl">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6">
+        <Link href="/" className="shrink-0" aria-label="GOxpress Way home">
+          <Brand />
+        </Link>
+
+        <nav className="hidden items-center gap-1 rounded-full border bg-white/70 p-1 shadow-sm md:flex dark:bg-white/5">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
+                pathname === link.href
+                  ? "bg-brand-navy text-white"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() =>
+              setTheme(resolvedTheme === "dark" ? "light" : "dark")
+            }
+            className="grid h-10 w-10 place-items-center rounded-lg border bg-card text-muted-foreground transition-colors hover:text-foreground"
+            aria-label="Toggle theme"
+          >
+            {resolvedTheme === "dark" ? (
+              <Sun className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
+          </button>
+
+          <Link
+            href="/"
+            className="hidden items-center gap-2 rounded-lg bg-brand-orange px-4 py-2.5 text-sm font-extrabold text-slate-950 shadow-sm transition-transform hover:-translate-y-0.5 md:inline-flex"
+          >
+            <Search className="h-4 w-4" />
+            Track
+          </Link>
+
+          <button
+            className="grid h-10 w-10 place-items-center rounded-lg border bg-card md:hidden"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+      </div>
+
+      {mobileOpen && (
+        <div className="border-t bg-background px-4 py-4 shadow-xl md:hidden">
+          <div className="space-y-1">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="block rounded-lg px-3 py-3 text-sm font-semibold hover:bg-muted"
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <Link
+              href="/"
+              className="mt-2 flex items-center justify-center gap-2 rounded-lg bg-brand-orange px-4 py-3 text-sm font-extrabold text-slate-950"
+              onClick={() => setMobileOpen(false)}
+            >
+              <Search className="h-4 w-4" />
+              Track Package
+            </Link>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
