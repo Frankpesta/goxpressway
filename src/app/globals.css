@@ -155,8 +155,4 @@
   .text-brand-orange {
     color: oklch(0.70 0.205 45);
   }
-
-  .logistics-photo {
-    @apply h-full w-full object-cover;
-  }
 }

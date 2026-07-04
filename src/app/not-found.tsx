@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Package, Home, Search, ArrowRight } from "lucide-react";
+import { Home, Search, ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
+import { Logo } from "@/components/logo";
 
 export const metadata: Metadata = {
   title: "Page Not Found",
@@ -12,11 +13,8 @@ export default function NotFound() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-2.5 font-bold text-lg mb-12">
-        <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center">
-          <Package className="h-5 w-5 text-primary-foreground" />
-        </div>
-        GOxpress Way
+      <Link href="/" className="mb-12">
+        <Logo height={36} />
       </Link>
 
       {/* 404 */}

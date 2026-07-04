@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useAction } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { motion } from "framer-motion";
@@ -138,8 +139,14 @@ export default function ContactPage() {
               discuss? Our team responds quickly and keeps the handoff clear.
             </p>
           </div>
-          <div className="overflow-hidden rounded-xl border border-white/10 shadow-2xl">
-            <img src={CONTACT_PHOTO} alt="Support team coordinating shipments" className="h-[420px] w-full object-cover" />
+          <div className="relative h-[420px] w-full overflow-hidden rounded-xl border border-white/10 shadow-2xl">
+            <Image
+              src={CONTACT_PHOTO}
+              alt="Support team coordinating shipments"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
+            />
           </div>
         </motion.div>
       </section>

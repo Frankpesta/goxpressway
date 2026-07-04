@@ -4,8 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Menu, Moon, PackageCheck, Search, Sun, X } from "lucide-react";
+import { Menu, Moon, Search, Sun, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/logo";
 
 const NAV_LINKS = [
   { href: "/services", label: "Services" },
@@ -14,17 +15,7 @@ const NAV_LINKS = [
 ];
 
 function Brand() {
-  return (
-    <span className="flex items-center gap-3">
-      <span className="relative grid h-10 w-10 place-items-center rounded-lg bg-brand-navy text-white shadow-sm">
-        <PackageCheck className="h-5 w-5" />
-        <span className="absolute -right-1 -top-1 h-3 w-3 rounded-sm bg-brand-orange" />
-      </span>
-      <span className="text-lg font-black tracking-normal text-foreground">
-        GO<span className="text-brand-orange">xpress</span> Way
-      </span>
-    </span>
-  );
+  return <Logo height={36} />;
 }
 
 export function NavHeader() {

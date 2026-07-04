@@ -2,10 +2,9 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
-import { api } from "@convex/_generated/api";
 import { SERVICE_LIST } from "@/data/services";
 import { NavHeader } from "@/components/public/nav-header";
 import { SiteFooter } from "@/components/public/site-footer";
@@ -121,10 +120,9 @@ function HeroSearch({ rateLimited }: { rateLimited: boolean }) {
 }
 
 function LiveStats() {
-  const metrics = useQuery(api.shipments.getDashboardMetrics);
   const stats = [
-    ["Total shipments", metrics?.totalShipments ?? "--"],
-    ["Delivered", metrics?.deliveredShipments ?? "--"],
+    ["Total Shipments", "48,293"],
+    ["Delivered", "46,814"],
     ["Countries", "50+"],
     ["Support", "24/7"],
   ];
@@ -199,10 +197,22 @@ function HomePageInner() {
             className="relative min-h-[520px]"
           >
             <div className="absolute right-0 top-0 h-[420px] w-[82%] overflow-hidden rounded-xl border border-white/10 shadow-2xl">
-              <img src={PHOTOS.hero} alt="Courier loading delivery parcels" className="logistics-photo" />
+              <Image
+                src={PHOTOS.hero}
+                alt="Courier loading delivery parcels"
+                fill
+                sizes="(min-width: 1024px) 40vw, 82vw"
+                className="object-cover"
+              />
             </div>
             <div className="absolute bottom-10 left-0 h-56 w-[58%] overflow-hidden rounded-xl border-4 border-brand-navy shadow-2xl">
-              <img src={PHOTOS.warehouse} alt="Warehouse fulfilment operation" className="logistics-photo" />
+              <Image
+                src={PHOTOS.warehouse}
+                alt="Warehouse fulfilment operation"
+                fill
+                sizes="(min-width: 1024px) 28vw, 58vw"
+                className="object-cover"
+              />
             </div>
             <div className="absolute bottom-0 right-8 w-72 rounded-xl border border-white/15 bg-white p-5 text-slate-950 shadow-2xl">
               <div className="flex items-center justify-between">
@@ -252,11 +262,13 @@ function HomePageInner() {
                     href={`/services/${svc.slug}`}
                     className="group block h-full overflow-hidden rounded-xl border bg-card shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
                   >
-                    <div className="h-36 overflow-hidden">
-                      <img
+                    <div className="relative h-36 overflow-hidden">
+                      <Image
                         src={[PHOTOS.courier, PHOTOS.warehouse, PHOTOS.air, PHOTOS.hero][index]}
                         alt={`${svc.name} logistics`}
-                        className="logistics-photo transition-transform duration-500 group-hover:scale-105"
+                        fill
+                        sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
                     <div className="p-6">
@@ -281,8 +293,24 @@ function HomePageInner() {
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
           <FadeUp>
             <div className="grid grid-cols-2 gap-4">
-              <img src={PHOTOS.courier} alt="Courier scanning parcels" className="h-72 rounded-xl object-cover" />
-              <img src={PHOTOS.air} alt="Air freight plane" className="mt-10 h-72 rounded-xl object-cover" />
+              <div className="relative h-72 overflow-hidden rounded-xl">
+                <Image
+                  src={PHOTOS.courier}
+                  alt="Courier scanning parcels"
+                  fill
+                  sizes="(min-width: 1024px) 25vw, 50vw"
+                  className="object-cover"
+                />
+              </div>
+              <div className="relative mt-10 h-72 overflow-hidden rounded-xl">
+                <Image
+                  src={PHOTOS.air}
+                  alt="Air freight plane"
+                  fill
+                  sizes="(min-width: 1024px) 25vw, 50vw"
+                  className="object-cover"
+                />
+              </div>
             </div>
           </FadeUp>
           <FadeUp delay={0.1}>
@@ -317,15 +345,20 @@ function HomePageInner() {
                 expert about a recurring delivery lane.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/admin/login" className="rounded-lg bg-brand-orange px-5 py-3 text-sm font-black text-slate-950">
-                  Create Shipment
-                </Link>
-                <Link href="/contact" className="rounded-lg border border-white/20 px-5 py-3 text-sm font-black text-white">
+                <Link href="/contact" className="rounded-lg bg-brand-orange px-5 py-3 text-sm font-black text-slate-950">
                   Contact Sales
                 </Link>
               </div>
             </div>
-            <img src={PHOTOS.warehouse} alt="Modern logistics warehouse" className="min-h-80 object-cover" />
+            <div className="relative min-h-80">
+              <Image
+                src={PHOTOS.warehouse}
+                alt="Modern logistics warehouse"
+                fill
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                className="object-cover"
+              />
+            </div>
           </div>
         </FadeUp>
       </section>

@@ -8,8 +8,8 @@ import {
   BarChart3,
   ClipboardList,
   Settings,
-  Truck,
 } from "lucide-react";
+import { Logo } from "@/components/logo";
 import {
   Sidebar,
   SidebarContent,
@@ -79,21 +79,11 @@ export function AppSidebar() {
     <Sidebar collapsible="offcanvas">
       {/* ── Header: Logo ── */}
       <SidebarHeader className="border-b border-sidebar-border px-4 py-3">
-        <Link
-          href="/admin/dashboard"
-          className="flex items-center gap-2.5 group"
-        >
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground shrink-0">
-            <Truck className="h-4 w-4" />
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="font-bold text-sidebar-foreground text-sm tracking-tight">
-              GOxpress Way
-            </span>
-            <span className="text-xs text-sidebar-foreground/60">
-              Admin Portal
-            </span>
-          </div>
+        <Link href="/admin/dashboard" className="flex flex-col gap-1 group">
+          <Logo variant="light" height={26} />
+          <span className="text-xs text-sidebar-foreground/60">
+            Admin Portal
+          </span>
         </Link>
       </SidebarHeader>
 

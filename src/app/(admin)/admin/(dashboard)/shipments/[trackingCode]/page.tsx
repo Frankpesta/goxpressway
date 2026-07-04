@@ -25,6 +25,7 @@ import {
   MapPin,
   Clock,
   QrCode,
+  Download,
 } from "lucide-react";
 
 interface PageProps {
@@ -127,13 +128,36 @@ export default function ShipmentDetailPage({ params }: PageProps) {
   const items = shipment.items ?? [];
 
   return (
+    <>
+      {/* Print CSS — hide admin chrome when printing */}
+      <style>{`
+        @media print {
+          [data-sidebar] { display: none !important; }
+          aside { display: none !important; }
+          .admin-header-print-hide { display: none !important; }
+          .print-hide { display: none !important; }
+          body { color: black !important; background: white !important; }
+        }
+      `}</style>
+
     <div className="p-6 space-y-6 max-w-5xl">
+      {/* Print-only header */}
+      <div className="hidden print:flex items-center gap-3 mb-6 pb-4 border-b">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-navy">
+          <Package className="h-5 w-5 text-white" />
+        </div>
+        <div>
+          <div className="text-xl font-black text-brand-navy">GOxpress Way</div>
+          <div className="text-xs text-slate-500 uppercase tracking-wide">Shipment Record — Admin</div>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="flex items-start gap-3 flex-wrap">
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 mt-0.5 shrink-0"
+          className="h-8 w-8 mt-0.5 shrink-0 print-hide"
           render={<Link href="/admin/shipments" />}
         >
           <ArrowLeft className="h-4 w-4" />
@@ -144,7 +168,7 @@ export default function ShipmentDetailPage({ params }: PageProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7"
+              className="h-7 w-7 print-hide"
               onClick={() => {
                 navigator.clipboard.writeText(shipment.trackingCode);
                 toast.success("Copied!");
@@ -168,7 +192,14 @@ export default function ShipmentDetailPage({ params }: PageProps) {
         </div>
 
         {/* Action buttons */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap print-hide">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.print()}
+          >
+            <Download className="mr-2 h-4 w-4" /> Download PDF
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -298,7 +329,7 @@ export default function ShipmentDetailPage({ params }: PageProps) {
       )}
 
       {/* Tabs: Timeline | Route | Audit Log */}
-      <Tabs defaultValue="timeline">
+      <Tabs defaultValue="timeline" className="print-hide">
         <TabsList>
           <TabsTrigger value="timeline">
             <Clock className="mr-1.5 h-4 w-4" />
@@ -441,5 +472,6 @@ export default function ShipmentDetailPage({ params }: PageProps) {
         />
       )}
     </div>
+    </>
   );
 }

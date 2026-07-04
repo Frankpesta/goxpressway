@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { NavHeader } from "@/components/public/nav-header";
 import { SiteFooter } from "@/components/public/site-footer";
@@ -62,8 +63,24 @@ export default function ServicesPage() {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <img src={SERVICE_PHOTOS[0]} alt="Courier delivery service" className="h-72 rounded-xl object-cover" />
-            <img src={SERVICE_PHOTOS[2]} alt="Freight logistics service" className="mt-10 h-72 rounded-xl object-cover" />
+            <div className="relative h-72 overflow-hidden rounded-xl">
+              <Image
+                src={SERVICE_PHOTOS[0]}
+                alt="Courier delivery service"
+                fill
+                sizes="(min-width: 1024px) 25vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="relative mt-10 h-72 overflow-hidden rounded-xl">
+              <Image
+                src={SERVICE_PHOTOS[2]}
+                alt="Freight logistics service"
+                fill
+                sizes="(min-width: 1024px) 25vw, 50vw"
+                className="object-cover"
+              />
+            </div>
           </div>
         </motion.div>
       </section>
@@ -77,7 +94,13 @@ export default function ServicesPage() {
               <FadeUp key={svc.slug}>
                 <div className={`grid grid-cols-1 items-center gap-8 lg:grid-cols-2 ${isEven ? "" : "lg:[&>*:first-child]:order-2"}`}>
                   <div className="relative min-h-[320px] overflow-hidden rounded-xl shadow-xl">
-                    <img src={SERVICE_PHOTOS[i]} alt={`${svc.name} operation`} className="absolute inset-0 h-full w-full object-cover" />
+                    <Image
+                      src={SERVICE_PHOTOS[i]}
+                      alt={`${svc.name} operation`}
+                      fill
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      className="object-cover"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-slate-950/5" />
                     <div className="absolute bottom-0 p-8 text-white">
                       <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-white/15 backdrop-blur">
@@ -175,9 +198,6 @@ export default function ServicesPage() {
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <Link href="/contact" className="rounded-lg bg-brand-orange px-6 py-3 text-sm font-black text-slate-950">
                 Talk to an Expert
-              </Link>
-              <Link href="/admin/login" className="rounded-lg border px-6 py-3 text-sm font-black hover:bg-accent/10">
-                Create a Shipment
               </Link>
             </div>
           </div>

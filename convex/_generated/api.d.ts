@@ -11,6 +11,8 @@
 import type * as auditLogs from "../auditLogs.js";
 import type * as auth from "../auth.js";
 import type * as crons from "../crons.js";
+import type * as email_templates_contact_email from "../email_templates/contact_email.js";
+import type * as email_templates_status_email from "../email_templates/status_email.js";
 import type * as emails from "../emails.js";
 import type * as http from "../http.js";
 import type * as lib_audit from "../lib/audit.js";
@@ -30,6 +32,8 @@ declare const fullApi: ApiFromModules<{
   auditLogs: typeof auditLogs;
   auth: typeof auth;
   crons: typeof crons;
+  "email_templates/contact_email": typeof email_templates_contact_email;
+  "email_templates/status_email": typeof email_templates_status_email;
   emails: typeof emails;
   http: typeof http;
   "lib/audit": typeof lib_audit;

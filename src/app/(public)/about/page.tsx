@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { NavHeader } from "@/components/public/nav-header";
 import { SiteFooter } from "@/components/public/site-footer";
@@ -91,8 +92,14 @@ export default function AboutPage() {
               they serve.
             </p>
           </div>
-          <div className="overflow-hidden rounded-xl border border-white/10 shadow-2xl">
-            <img src={ABOUT_PHOTO} alt="Global freight yard" className="h-[420px] w-full object-cover" />
+          <div className="relative h-[420px] w-full overflow-hidden rounded-xl border border-white/10 shadow-2xl">
+            <Image
+              src={ABOUT_PHOTO}
+              alt="Global freight yard"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
+            />
           </div>
         </motion.div>
       </section>
@@ -199,7 +206,15 @@ export default function AboutPage() {
             ].map((member, i) => (
               <FadeUp key={member.name} delay={i * 0.08}>
                 <div className="overflow-hidden rounded-xl border bg-card text-center shadow-sm">
-                  <img src={TEAM_PHOTOS[i]} alt={member.name} className="h-56 w-full object-cover" />
+                  <div className="relative h-56 w-full">
+                    <Image
+                      src={TEAM_PHOTOS[i]}
+                      alt={member.name}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
                   <div className="p-5">
                   <div className="font-semibold">{member.name}</div>
                   <div className="text-sm text-muted-foreground">{member.role}</div>

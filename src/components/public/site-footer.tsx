@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Mail, MapPin, PackageCheck, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
+import { Logo } from "@/components/logo";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -8,14 +9,8 @@ export function SiteFooter() {
     <footer className="bg-brand-navy text-white">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-14 sm:grid-cols-2 sm:px-6 lg:grid-cols-[1.4fr_0.8fr_0.8fr_1fr]">
         <div>
-          <Link href="/" className="mb-5 flex items-center gap-3">
-            <span className="relative grid h-11 w-11 place-items-center rounded-lg bg-white text-slate-950">
-              <PackageCheck className="h-5 w-5" />
-              <span className="absolute -right-1 -top-1 h-3 w-3 rounded-sm bg-brand-orange" />
-            </span>
-            <span className="text-xl font-black">
-              GO<span className="text-brand-orange">xpress</span> Way
-            </span>
+          <Link href="/" className="mb-5 flex items-center">
+            <Logo variant="light" height={40} />
           </Link>
           <p className="max-w-sm text-sm leading-7 text-white/65">
             Premium courier, freight, and international logistics with live
@@ -62,7 +57,6 @@ export function SiteFooter() {
               ["About", "/about"],
               ["Contact", "/contact"],
               ["Track Package", "/"],
-              ["Admin Portal", "/admin/login"],
             ].map(([label, href]) => (
               <li key={href}>
                 <Link href={href} className="transition-colors hover:text-brand-orange">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import QRCode from "qrcode";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
@@ -35,11 +36,12 @@ export function QrCodeDisplay({ url, trackingCode, size = 180 }: Props) {
   return (
     <div className="flex flex-col items-center gap-3">
       {dataUrl ? (
-        <img
+        <Image
           src={dataUrl}
           alt={`QR code for ${trackingCode}`}
           width={size}
           height={size}
+          unoptimized
           className="rounded-lg border"
         />
       ) : (
@@ -53,6 +55,7 @@ export function QrCodeDisplay({ url, trackingCode, size = 180 }: Props) {
         size="sm"
         onClick={handleDownload}
         disabled={!dataUrl}
+        className="print:hidden"
       >
         <Download className="mr-2 h-4 w-4" /> Download QR
       </Button>

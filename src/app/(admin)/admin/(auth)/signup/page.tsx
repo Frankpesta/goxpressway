@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useQuery } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
+import { api } from "../../../../../../convex/_generated/api";
 import {
   Card,
   CardContent,
@@ -28,7 +28,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, PackageCheck } from "lucide-react";
+import { AlertCircle } from "lucide-react";
+import { Logo } from "@/components/logo";
 
 const signUpSchema = z
   .object({
@@ -91,13 +92,8 @@ export default function SignupPage() {
   return (
     <div className="w-full max-w-md">
       <div className="mb-8 flex flex-col gap-2">
-        <div className="mb-2 flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-lg bg-brand-navy text-white">
-            <PackageCheck className="h-5 w-5" />
-          </span>
-          <span className="text-2xl font-black tracking-normal">
-            GO<span className="text-brand-orange">xpress</span> Way
-          </span>
+        <div className="mb-2">
+          <Logo height={40} />
         </div>
         <p className="text-sm font-semibold text-muted-foreground">
           One-time admin account setup
