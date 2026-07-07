@@ -23,7 +23,6 @@ import {
   Package,
   Loader2,
   MapPin,
-  Clock,
   QrCode,
   Download,
 } from "lucide-react";
@@ -124,7 +123,6 @@ export default function ShipmentDetailPage({ params }: PageProps) {
   }
 
   const checkpoints = shipment.checkpoints ?? [];
-  const timeline = shipment.timeline ?? [];
   const items = shipment.items ?? [];
 
   return (
@@ -328,13 +326,9 @@ export default function ShipmentDetailPage({ params }: PageProps) {
         </SectionCard>
       )}
 
-      {/* Tabs: Timeline | Route | Audit Log */}
-      <Tabs defaultValue="timeline" className="print-hide">
+      {/* Tabs: Route | Audit Log */}
+      <Tabs defaultValue="route" className="print-hide">
         <TabsList>
-          <TabsTrigger value="timeline">
-            <Clock className="mr-1.5 h-4 w-4" />
-            Timeline ({timeline.length})
-          </TabsTrigger>
           <TabsTrigger value="route">
             <MapPin className="mr-1.5 h-4 w-4" />
             Route ({checkpoints.length})
@@ -344,47 +338,6 @@ export default function ShipmentDetailPage({ params }: PageProps) {
             Audit Log ({auditLogs?.length ?? 0})
           </TabsTrigger>
         </TabsList>
-
-        {/* Timeline */}
-        <TabsContent value="timeline" className="mt-4">
-          {timeline.length === 0 ? (
-            <div className="rounded-xl border border-dashed py-10 text-center">
-              <Clock className="mx-auto h-7 w-7 text-muted-foreground mb-2" />
-              <p className="text-sm text-muted-foreground">No timeline events yet.</p>
-            </div>
-          ) : (
-            <div className="relative pl-6 space-y-4">
-              <div className="absolute left-2 top-0 bottom-0 w-px bg-border" />
-              {timeline.map((ev, i) => (
-                <div key={i} className="relative">
-                  <div className="absolute -left-4 w-3 h-3 rounded-full bg-primary mt-1" />
-                  <div className="rounded-xl border bg-card p-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <p className="font-medium text-sm">{ev.title}</p>
-                        {ev.description && (
-                          <p className="text-muted-foreground text-xs mt-0.5">
-                            {ev.description}
-                          </p>
-                        )}
-                      </div>
-                      <StatusBadge status={ev.status} />
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-2 flex gap-3">
-                      <span>{new Date(ev.eventDate).toLocaleString()}</span>
-                      {ev.location && (
-                        <span className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {ev.location}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </TabsContent>
 
         {/* Route */}
         <TabsContent value="route" className="mt-4">

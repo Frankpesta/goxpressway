@@ -57,8 +57,7 @@ export function DeleteConfirmDialog({
           <AlertDialogDescription>
             This will permanently delete{" "}
             <span className="font-mono font-medium">{trackingCode}</span> and all
-            associated items, checkpoints, and timeline events. This action cannot
-            be undone.
+            associated items and checkpoints. This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

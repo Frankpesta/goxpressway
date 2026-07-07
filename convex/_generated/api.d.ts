@@ -19,7 +19,6 @@ import type * as lib_audit from "../lib/audit.js";
 import type * as lib_tracking from "../lib/tracking.js";
 import type * as routes from "../routes.js";
 import type * as shipments from "../shipments.js";
-import type * as timelines from "../timelines.js";
 import type * as users from "../users.js";
 
 import type {
@@ -40,7 +39,6 @@ declare const fullApi: ApiFromModules<{
   "lib/tracking": typeof lib_tracking;
   routes: typeof routes;
   shipments: typeof shipments;
-  timelines: typeof timelines;
   users: typeof users;
 }>;
 

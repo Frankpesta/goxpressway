@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { motion } from "framer-motion";
-import { TrackingTimeline } from "@/components/public/tracking-timeline";
 import { QrCodeDisplay } from "@/components/admin/shipments/qr-code-display";
 import {
   Package,
@@ -22,8 +21,6 @@ import {
   Search,
   Truck,
   CheckCircle2,
-  XCircle,
-  RotateCcw,
   Clock,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -50,16 +47,10 @@ type IndicatorStyle = {
 };
 
 const STATUS_INDICATOR: Record<string, IndicatorStyle> = {
-  Created: {
+  "Shipment Registered": {
     dot: "bg-slate-400", dotHex: "#94a3b8",
     ring: "bg-slate-300", pulse: false,
     bg: "bg-slate-100 dark:bg-slate-800/60", text: "text-slate-700 dark:text-slate-300",
-    icon: Package,
-  },
-  "Picked Up": {
-    dot: "bg-blue-500", dotHex: "#3b82f6",
-    ring: "bg-blue-400", pulse: true,
-    bg: "bg-blue-50 dark:bg-blue-900/30", text: "text-blue-700 dark:text-blue-400",
     icon: Package,
   },
   "In Transit": {
@@ -68,41 +59,11 @@ const STATUS_INDICATOR: Record<string, IndicatorStyle> = {
     bg: "bg-amber-50 dark:bg-amber-900/30", text: "text-amber-700 dark:text-amber-400",
     icon: Truck,
   },
-  "Arrived At Facility": {
+  "Held at the Airport": {
     dot: "bg-purple-500", dotHex: "#a855f7",
     ring: "bg-purple-400", pulse: true,
     bg: "bg-purple-50 dark:bg-purple-900/30", text: "text-purple-700 dark:text-purple-400",
     icon: CheckCircle2,
-  },
-  "Out For Delivery": {
-    dot: "bg-orange-500", dotHex: "#f97316",
-    ring: "bg-orange-400", pulse: true,
-    bg: "bg-orange-50 dark:bg-orange-900/30", text: "text-orange-700 dark:text-orange-400",
-    icon: Truck,
-  },
-  Delivered: {
-    dot: "bg-green-500", dotHex: "#22c55e",
-    ring: "bg-green-400", pulse: false,
-    bg: "bg-green-50 dark:bg-green-900/30", text: "text-green-700 dark:text-green-400",
-    icon: CheckCircle2,
-  },
-  "Failed Delivery": {
-    dot: "bg-red-500", dotHex: "#ef4444",
-    ring: "bg-red-400", pulse: true,
-    bg: "bg-red-50 dark:bg-red-900/30", text: "text-red-700 dark:text-red-400",
-    icon: XCircle,
-  },
-  Returned: {
-    dot: "bg-rose-500", dotHex: "#f43f5e",
-    ring: "bg-rose-400", pulse: true,
-    bg: "bg-rose-50 dark:bg-rose-900/30", text: "text-rose-700 dark:text-rose-400",
-    icon: RotateCcw,
-  },
-  Cancelled: {
-    dot: "bg-red-400", dotHex: "#f87171",
-    ring: "bg-red-300", pulse: false,
-    bg: "bg-gray-100 dark:bg-gray-800/60", text: "text-gray-600 dark:text-gray-400",
-    icon: XCircle,
   },
 };
 
@@ -195,28 +156,22 @@ function TrackingPageSkeleton() {
 /* ─── Journey progress strip ─────────────────────────────────────────────────── */
 
 const JOURNEY = [
-  "Created",
-  "Picked Up",
+  "Shipment Registered",
   "In Transit",
-  "Arrived At Facility",
-  "Out For Delivery",
-  "Delivered",
+  "Held at the Airport",
 ] as const;
 
-const EXCEPTION_STATUSES = ["Failed Delivery", "Returned", "Cancelled"];
-
 function JourneyStrip({ status }: { status: string }) {
-  const isException = EXCEPTION_STATUSES.includes(status);
   const currentIdx = JOURNEY.indexOf(status as (typeof JOURNEY)[number]);
-  // If status is in JOURNEY use its index; unknown statuses default to 0
-  const effectiveIdx = isException ? -1 : currentIdx === -1 ? 0 : currentIdx;
+  // If status isn't in JOURNEY, default to the first step
+  const effectiveIdx = currentIdx === -1 ? 0 : currentIdx;
 
   return (
     <div className="overflow-x-auto py-1">
       <div className="flex min-w-max items-start gap-0">
         {JOURNEY.map((step, i) => {
           const isDone = effectiveIdx > i;
-          const isCurrent = effectiveIdx === i && !isException;
+          const isCurrent = effectiveIdx === i;
           const isLast = i === JOURNEY.length - 1;
           // Use the STEP's indicator style so each step gets its own color dot
           const ind = getIndicatorStyle(step);
@@ -259,7 +214,7 @@ function JourneyStrip({ status }: { status: string }) {
                   )}
                   style={isCurrent ? { color: ind.dotHex } : undefined}
                 >
-                  {step === "Arrived At Facility" ? "At Hub" : step}
+                  {step === "Held at the Airport" ? "At Airport" : step}
                 </span>
               </div>
 
@@ -273,14 +228,6 @@ function JourneyStrip({ status }: { status: string }) {
             </div>
           );
         })}
-
-        {/* Exception badge — shown alongside the journey for failed/returned/cancelled */}
-        {isException && (
-          <div className="ml-4 mt-1 flex items-center gap-2 rounded-full bg-red-50 px-3 py-1.5 dark:bg-red-900/30">
-            <XCircle className="h-4 w-4 text-red-500 shrink-0" />
-            <span className="text-xs font-black text-red-600 dark:text-red-400">{status}</span>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -552,23 +499,6 @@ export default function PublicTrackingPage({
                 </motion.div>
               )}
 
-              {/* ── Timeline ── */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="no-break"
-              >
-                {shipment.timeline.length > 0 ? (
-                  <TrackingTimeline events={shipment.timeline} />
-                ) : (
-                  <div className="rounded-2xl border bg-card p-8 text-center">
-                    <Clock className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">No tracking events yet. Check back soon.</p>
-                  </div>
-                )}
-              </motion.div>
-
               {/* ── Sender / Receiver ── */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
@@ -688,11 +618,8 @@ export default function PublicTrackingPage({
                     <div className="overflow-x-auto py-1">
                       <div className="flex items-start gap-0 min-w-max">
                         {shipment.checkpoints.map((cp, i) => {
-                          const cpInd = getIndicatorStyle(
-                            cp.arrivalStatus === "arrived" ? "Delivered"
-                            : cp.arrivalStatus === "current" ? shipment.status
-                            : "Created"
-                          );
+                          // Only read when arrivalStatus is "current" — the other branches use fixed classes.
+                          const cpInd = getIndicatorStyle(shipment.status);
                           return (
                             <div key={cp._id} className="flex items-start">
                               <div className="flex flex-col items-center w-24 text-center">

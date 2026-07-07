@@ -30,22 +30,16 @@ import {
 
 const CHART_COLORS = {
   primary: "#2563eb",
-  delivered: "#16a34a",
+  inTransit: "#7c3aed",
   revenue: "#7c3aed",
   rate: "#0d9488",
   muted: "#94a3b8",
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  Delivered: "#16a34a",
+  "Shipment Registered": "#64748b",
   "In Transit": "#2563eb",
-  Created: "#64748b",
-  "Picked Up": "#2563eb",
-  "Out For Delivery": "#f59e0b",
-  "Arrived At Facility": "#7c3aed",
-  "Failed Delivery": "#dc2626",
-  Returned: "#6b7280",
-  "Pending Pickup": "#d97706",
+  "Held at the Airport": "#7c3aed",
 };
 
 const TICK_STYLE = { fill: "#888", fontSize: 11 };
@@ -163,8 +157,8 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: "Total", value: metrics.totalShipments, color: CHART_COLORS.primary },
-          { label: "Delivered", value: metrics.deliveredShipments, color: CHART_COLORS.delivered },
-          { label: "Active", value: metrics.activeShipments, color: "#f59e0b" },
+          { label: "In Transit", value: metrics.inTransitShipments, color: CHART_COLORS.inTransit },
+          { label: "Held at Airport", value: metrics.heldAtAirportShipments, color: "#a855f7" },
           {
             label: "Revenue",
             value: `$${metrics.totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
@@ -185,7 +179,7 @@ export default function AnalyticsPage() {
         {/* 1. Shipment Volume */}
         <ChartCard
           title="Shipment Volume"
-          subtitle="Total & delivered shipments per month (last 12 months)"
+          subtitle="Total & in-transit shipments per month (last 12 months)"
           icon={BarChart3}
         >
           {!hasData ? (
@@ -205,7 +199,7 @@ export default function AnalyticsPage() {
                   formatter={(v) => <span style={{ color: "#888", fontSize: 11 }}>{v}</span>}
                 />
                 <Bar dataKey="total" name="Total" fill={CHART_COLORS.primary} radius={[4, 4, 0, 0]} />
-                <Bar dataKey="delivered" name="Delivered" fill={CHART_COLORS.delivered} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="inTransit" name="In Transit" fill={CHART_COLORS.inTransit} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -268,10 +262,10 @@ export default function AnalyticsPage() {
           )}
         </ChartCard>
 
-        {/* 3. Delivery Success Rate */}
+        {/* 3. Held at Airport Rate */}
         <ChartCard
-          title="Delivery Success Rate"
-          subtitle="Percentage of shipments delivered on time per month"
+          title="Held at Airport Rate"
+          subtitle="Percentage of shipments held at the airport per month"
           icon={TrendingUp}
         >
           {!hasData ? (
@@ -288,8 +282,8 @@ export default function AnalyticsPage() {
                 />
                 <Line
                   type="monotone"
-                  dataKey="successRate"
-                  name="Success Rate"
+                  dataKey="heldAtAirportRate"
+                  name="Held at Airport Rate"
                   stroke={CHART_COLORS.rate}
                   strokeWidth={2.5}
                   dot={{ r: 4, fill: CHART_COLORS.rate, strokeWidth: 0 }}

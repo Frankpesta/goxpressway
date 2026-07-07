@@ -10,7 +10,6 @@ import { Step2Receiver } from "@/components/admin/wizard/step-2-receiver";
 import { Step3Items } from "@/components/admin/wizard/step-3-items";
 import { Step4Pricing } from "@/components/admin/wizard/step-4-pricing";
 import { Step5Route } from "@/components/admin/wizard/step-5-route";
-import { Step6Timeline } from "@/components/admin/wizard/step-6-timeline";
 import { Step7Review } from "@/components/admin/wizard/step-7-review";
 import {
   WizardData,
@@ -18,7 +17,6 @@ import {
   ItemFormData,
   PricingData,
   CheckpointFormData,
-  TimelineEventFormData,
   DEFAULT_SENDER,
   DEFAULT_PRICING,
 } from "@/types/wizard";
@@ -30,7 +28,6 @@ const EMPTY_DATA: WizardData = {
   items: [],
   pricing: { ...DEFAULT_PRICING },
   checkpoints: [],
-  timelineEvents: [],
 };
 
 function WizardPageInner() {
@@ -101,14 +98,6 @@ function WizardPageInner() {
           latitude: cp.latitude,
           longitude: cp.longitude,
         })),
-        timelineEvents: (existingShipment.timeline ?? []).map((ev) => ({
-          id: crypto.randomUUID(),
-          title: ev.title,
-          description: ev.description ?? "",
-          location: ev.location ?? "",
-          eventDate: ev.eventDate,
-          status: ev.status,
-        })),
       });
     }
     setInitialized(true);
@@ -132,7 +121,7 @@ function WizardPageInner() {
           {isEdit ? `Edit Shipment · ${editCode}` : "New Shipment"}
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Step {step} of 7 — fill in each section{" "}
+          Step {step} of 6 — fill in each section{" "}
           {isEdit ? "to update the shipment." : "to create the shipment."}
         </p>
       </div>
@@ -188,19 +177,9 @@ function WizardPageInner() {
           />
         )}
         {step === 6 && (
-          <Step6Timeline
-            data={data.timelineEvents}
-            onComplete={(timelineEvents: TimelineEventFormData[]) => {
-              setData((d) => ({ ...d, timelineEvents }));
-              setStep(7);
-            }}
-            onBack={() => setStep(5)}
-          />
-        )}
-        {step === 7 && (
           <Step7Review
             data={data}
-            onBack={() => setStep(6)}
+            onBack={() => setStep(5)}
             editShipmentId={editShipmentId}
             editTrackingCode={editCode ?? undefined}
           />

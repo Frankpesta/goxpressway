@@ -31,23 +31,11 @@ export function getStatusEmailContent(
   type Config = { subject: string; heading: string; detail: string; accent: string };
 
   const STATUS_CONFIG: Record<string, Config> = {
-    Created: {
-      subject: `Shipment Created — ${trackingCode}`,
-      heading: "Your shipment has been created",
+    "Shipment Registered": {
+      subject: `Shipment Registered — ${trackingCode}`,
+      heading: "Your shipment has been registered",
       detail: "We've registered your shipment. Use your tracking number at any time to see real-time status updates.",
       accent: "#475569",
-    },
-    "Pending Pickup": {
-      subject: `Pending Pickup — ${trackingCode}`,
-      heading: "Your shipment is pending pickup",
-      detail: "A courier is scheduled to collect your package soon. We'll notify you as soon as it's been picked up.",
-      accent: "#d97706",
-    },
-    "Picked Up": {
-      subject: `Shipment Picked Up — ${trackingCode}`,
-      heading: "Your shipment has been picked up",
-      detail: "Your package is in our hands. We'll keep you posted as it moves through our network.",
-      accent: "#2563eb",
     },
     "In Transit": {
       subject: `In Transit — ${trackingCode}`,
@@ -55,59 +43,11 @@ export function getStatusEmailContent(
       detail: "Your package is actively moving through our logistics network toward its destination.",
       accent: "#4f46e5",
     },
-    "Arrived At Facility": {
-      subject: `Arrived at Facility — ${trackingCode}`,
-      heading: "Your shipment has arrived at a facility",
-      detail: "Your package is at one of our processing facilities and is being prepared for the next leg of its journey.",
+    "Held at the Airport": {
+      subject: `Held at the Airport — ${trackingCode}`,
+      heading: "Your shipment is being held at the airport",
+      detail: "Your package is currently held at an airport facility. We'll notify you as soon as it clears and continues its journey.",
       accent: "#7c3aed",
-    },
-    "At Facility": {
-      subject: `Arrived at Facility — ${trackingCode}`,
-      heading: "Your shipment has arrived at a facility",
-      detail: "Your package is at one of our processing facilities and is being prepared for the next leg of its journey.",
-      accent: "#7c3aed",
-    },
-    "Out For Delivery": {
-      subject: `Out for Delivery — ${trackingCode}`,
-      heading: "Your shipment is out for delivery today",
-      detail: "Your package is with a delivery courier and on its way to the destination address. Expect delivery today!",
-      accent: "#ea580c",
-    },
-    "Out for Delivery": {
-      subject: `Out for Delivery — ${trackingCode}`,
-      heading: "Your shipment is out for delivery today",
-      detail: "Your package is with a delivery courier and on its way to the destination address. Expect delivery today!",
-      accent: "#ea580c",
-    },
-    Delivered: {
-      subject: `Delivered — ${trackingCode}`,
-      heading: "Your shipment has been delivered",
-      detail: "Your package was successfully delivered. Thank you for choosing GOxpress Way.",
-      accent: "#16a34a",
-    },
-    "Failed Delivery": {
-      subject: `Delivery Attempt Failed — ${trackingCode}`,
-      heading: "Delivery was unsuccessful",
-      detail: "We were unable to complete delivery. Our courier will try again or please contact us to arrange a suitable time.",
-      accent: "#dc2626",
-    },
-    Failed: {
-      subject: `Delivery Attempt Failed — ${trackingCode}`,
-      heading: "Delivery was unsuccessful",
-      detail: "We were unable to complete delivery. Our courier will try again or please contact us to arrange a suitable time.",
-      accent: "#dc2626",
-    },
-    Returned: {
-      subject: `Shipment Returned — ${trackingCode}`,
-      heading: "Your shipment is being returned",
-      detail: "Your package is on its way back to the sender. Contact us if you'd like to arrange re-delivery.",
-      accent: "#be123c",
-    },
-    Cancelled: {
-      subject: `Shipment Cancelled — ${trackingCode}`,
-      heading: "Your shipment has been cancelled",
-      detail: "This shipment has been cancelled. Contact support if you believe this is an error.",
-      accent: "#9f1239",
     },
   };
 

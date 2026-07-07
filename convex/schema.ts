@@ -69,18 +69,6 @@ export default defineSchema({
     .index("by_shipment", ["shipmentId"])
     .index("by_shipment_sequence", ["shipmentId", "sequence"]),
 
-  timelineEvents: defineTable({
-    shipmentId: v.id("shipments"),
-    title: v.string(),
-    description: v.optional(v.string()),
-    location: v.optional(v.string()),
-    eventDate: v.string(),
-    status: v.string(),
-    sequence: v.number(),
-  })
-    .index("by_shipment", ["shipmentId"])
-    .index("by_shipment_sequence", ["shipmentId", "sequence"]),
-
   auditLogs: defineTable({
     action: v.string(),
     adminId: v.id("users"),

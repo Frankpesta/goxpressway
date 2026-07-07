@@ -41,36 +41,20 @@ export interface CheckpointFormData {
   longitude: number;
 }
 
-export interface TimelineEventFormData {
-  id: string;
-  title: string;
-  description: string;
-  location: string;
-  eventDate: string;
-  status: string;
-}
-
 export interface WizardData {
   sender: ContactData;
   receiver: ContactData;
   items: ItemFormData[];
   pricing: PricingData;
   checkpoints: CheckpointFormData[];
-  timelineEvents: TimelineEventFormData[];
 }
 
 export const SHIPMENT_TYPES = ["Express", "Standard", "Freight", "International"] as const;
 
 export const SHIPMENT_STATUSES = [
-  "Created",
-  "Picked Up",
+  "Shipment Registered",
   "In Transit",
-  "Arrived At Facility",
-  "Out For Delivery",
-  "Delivered",
-  "Failed Delivery",
-  "Returned",
-  "Cancelled",
+  "Held at the Airport",
 ] as const;
 
 export const DEFAULT_SENDER: ContactData = {
@@ -86,7 +70,7 @@ export const DEFAULT_SENDER: ContactData = {
 
 export const DEFAULT_PRICING: PricingData = {
   shipmentType: "Standard",
-  status: "Created",
+  status: "Shipment Registered",
   dispatchDate: "",
   estimatedDeliveryDate: "",
   weight: 0,

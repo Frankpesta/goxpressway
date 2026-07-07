@@ -126,37 +126,23 @@ describe("trackingUrl", () => {
 // ── Status lifecycle validation ───────────────────────────────────────────────
 describe("Shipment status definitions", () => {
   const DEFAULT_STATUSES = [
-    "Created",
-    "Picked Up",
+    "Shipment Registered",
     "In Transit",
-    "Arrived At Facility",
-    "Out For Delivery",
-    "Delivered",
-    "Failed Delivery",
-    "Returned",
-    "Cancelled",
+    "Held at the Airport",
   ];
 
-  it("contains exactly 9 default statuses", () => {
-    expect(DEFAULT_STATUSES).toHaveLength(9);
+  it("contains exactly 3 default statuses", () => {
+    expect(DEFAULT_STATUSES).toHaveLength(3);
   });
 
-  it("Delivered is a valid terminal status", () => {
-    expect(DEFAULT_STATUSES).toContain("Delivered");
+  it("Held at the Airport is a valid status", () => {
+    expect(DEFAULT_STATUSES).toContain("Held at the Airport");
   });
 
-  it("auto-archive applies only to Delivered status", () => {
+  it("auto-archive applies only to Held at the Airport status", () => {
     const archivableStatuses = DEFAULT_STATUSES.filter(
-      (s) => s === "Delivered"
+      (s) => s === "Held at the Airport"
     );
     expect(archivableStatuses).toHaveLength(1);
-  });
-
-  it("active statuses exclude terminal statuses", () => {
-    const active = DEFAULT_STATUSES.filter(
-      (s) =>
-        !["Delivered", "Failed Delivery", "Returned", "Cancelled"].includes(s)
-    );
-    expect(active).toHaveLength(5);
   });
 });

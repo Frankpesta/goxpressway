@@ -10,7 +10,6 @@ const STEPS = [
   { label: "Items" },
   { label: "Pricing" },
   { label: "Route" },
-  { label: "Timeline" },
   { label: "Review" },
 ];
 

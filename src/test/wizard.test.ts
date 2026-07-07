@@ -119,7 +119,7 @@ const pricingSchema = z.object({
 
 const VALID_PRICING = {
   shipmentType: "Express",
-  status: "Created",
+  status: "Shipment Registered",
   dispatchDate: "2026-07-01",
   estimatedDeliveryDate: "2026-07-05",
   weight: 2.5,
@@ -165,44 +165,5 @@ describe("Pricing schema validation", () => {
     expect(
       pricingSchema.safeParse({ ...VALID_PRICING, dispatchDate: "", estimatedDeliveryDate: "" }).success
     ).toBe(true);
-  });
-});
-
-// ── Timeline event schema ────────────────────────────────────────────────────
-const eventSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string(),
-  location: z.string(),
-  eventDate: z.string().min(1, "Date is required"),
-  status: z.string().min(1, "Status is required"),
-});
-
-describe("Timeline event schema validation", () => {
-  const VALID_EVENT = {
-    title: "Package picked up",
-    description: "Collected from sender address",
-    location: "London, UK",
-    eventDate: "2026-07-01T10:00",
-    status: "Picked Up",
-  };
-
-  it("accepts a valid event", () => {
-    expect(eventSchema.safeParse(VALID_EVENT).success).toBe(true);
-  });
-
-  it("rejects empty title", () => {
-    expect(eventSchema.safeParse({ ...VALID_EVENT, title: "" }).success).toBe(false);
-  });
-
-  it("rejects empty date", () => {
-    expect(eventSchema.safeParse({ ...VALID_EVENT, eventDate: "" }).success).toBe(false);
-  });
-
-  it("allows empty description", () => {
-    expect(eventSchema.safeParse({ ...VALID_EVENT, description: "" }).success).toBe(true);
-  });
-
-  it("allows empty location", () => {
-    expect(eventSchema.safeParse({ ...VALID_EVENT, location: "" }).success).toBe(true);
   });
 });

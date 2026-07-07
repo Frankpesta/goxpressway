@@ -30,7 +30,7 @@ export const getShipmentById = query({
     const shipment = await ctx.db.get(id);
     if (!shipment) return null;
 
-    const [items, checkpoints, timeline] = await Promise.all([
+    const [items, checkpoints] = await Promise.all([
       ctx.db
         .query("shipmentItems")
         .withIndex("by_shipment", (q) => q.eq("shipmentId", id))
@@ -39,17 +39,12 @@ export const getShipmentById = query({
         .query("routeCheckpoints")
         .withIndex("by_shipment_sequence", (q) => q.eq("shipmentId", id))
         .collect(),
-      ctx.db
-        .query("timelineEvents")
-        .withIndex("by_shipment_sequence", (q) => q.eq("shipmentId", id))
-        .collect(),
     ]);
 
     return {
       ...shipment,
       items,
       checkpoints: checkpoints.sort((a, b) => a.sequence - b.sequence),
-      timeline: timeline.sort((a, b) => a.sequence - b.sequence),
     };
   },
 });
@@ -66,7 +61,7 @@ export const getShipmentByTrackingCode = query({
 
     if (!shipment) return null;
 
-    const [items, checkpoints, timeline] = await Promise.all([
+    const [items, checkpoints] = await Promise.all([
       ctx.db
         .query("shipmentItems")
         .withIndex("by_shipment", (q) => q.eq("shipmentId", shipment._id))
@@ -77,19 +72,12 @@ export const getShipmentByTrackingCode = query({
           q.eq("shipmentId", shipment._id)
         )
         .collect(),
-      ctx.db
-        .query("timelineEvents")
-        .withIndex("by_shipment_sequence", (q) =>
-          q.eq("shipmentId", shipment._id)
-        )
-        .collect(),
     ]);
 
     return {
       ...shipment,
       items,
       checkpoints: checkpoints.sort((a, b) => a.sequence - b.sequence),
-      timeline: timeline.sort((a, b) => a.sequence - b.sequence),
     };
   },
 });
@@ -165,15 +153,12 @@ export const getDashboardMetrics = query({
   handler: async (ctx) => {
     const all = await ctx.db.query("shipments").collect();
 
-    const active = ["Created", "Picked Up", "In Transit", "Arrived At Facility", "Out For Delivery"];
-
     return {
       totalShipments: all.length,
-      activeShipments: all.filter((s) => !s.archived && active.includes(s.status)).length,
-      deliveredShipments: all.filter((s) => s.status === "Delivered").length,
       archivedShipments: all.filter((s) => s.archived).length,
+      registeredShipments: all.filter((s) => s.status === "Shipment Registered").length,
       inTransitShipments: all.filter((s) => s.status === "In Transit").length,
-      failedDeliveries: all.filter((s) => s.status === "Failed Delivery").length,
+      heldAtAirportShipments: all.filter((s) => s.status === "Held at the Airport").length,
       totalRevenue: all.reduce((sum, s) => sum + s.totalCost, 0),
     };
   },
@@ -204,9 +189,10 @@ export const getAnalyticsData = query({
       month: string;
       label: string;
       total: number;
-      delivered: number;
+      inTransit: number;
+      heldAtAirport: number;
       revenue: number;
-      successRate: number;
+      heldAtAirportRate: number;
     }[] = [];
 
     for (let i = 11; i >= 0; i--) {
@@ -214,14 +200,15 @@ export const getAnalyticsData = query({
       const monthStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
       const label = d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
       const ms = all.filter((s) => s.createdAt.startsWith(monthStr));
-      const deliveredCount = ms.filter((s) => s.status === "Delivered").length;
+      const heldCount = ms.filter((s) => s.status === "Held at the Airport").length;
       monthly.push({
         month: monthStr,
         label,
         total: ms.length,
-        delivered: deliveredCount,
+        inTransit: ms.filter((s) => s.status === "In Transit").length,
+        heldAtAirport: heldCount,
         revenue: Math.round(ms.reduce((sum, s) => sum + s.totalCost, 0) * 100) / 100,
-        successRate: ms.length > 0 ? Math.round((deliveredCount / ms.length) * 100) : 0,
+        heldAtAirportRate: ms.length > 0 ? Math.round((heldCount / ms.length) * 100) : 0,
       });
     }
 
@@ -255,15 +242,6 @@ const checkpointValidator = v.object({
   longitude: v.number(),
   sequence: v.number(),
   arrivalStatus: v.optional(v.string()),
-});
-
-const timelineEventValidator = v.object({
-  title: v.string(),
-  description: v.optional(v.string()),
-  location: v.optional(v.string()),
-  eventDate: v.string(),
-  status: v.string(),
-  sequence: v.number(),
 });
 
 export const createShipment = mutation({
@@ -302,7 +280,6 @@ export const createShipment = mutation({
     // Related data
     items: v.array(shipmentItemValidator),
     checkpoints: v.optional(v.array(checkpointValidator)),
-    timelineEvents: v.optional(v.array(timelineEventValidator)),
   },
   handler: async (ctx, args) => {
     const adminId = await getAuthUserId(ctx);
@@ -315,7 +292,7 @@ export const createShipment = mutation({
     const shipmentId = await ctx.db.insert("shipments", {
       trackingCode,
       qrCodeUrl,
-      status: args.status ?? "Created",
+      status: args.status ?? "Shipment Registered",
       shipmentType: args.shipmentType,
       dispatchDate: args.dispatchDate,
       estimatedDeliveryDate: args.estimatedDeliveryDate,
@@ -360,21 +337,14 @@ export const createShipment = mutation({
       }
     }
 
-    // Insert timeline events
-    if (args.timelineEvents?.length) {
-      for (const ev of args.timelineEvents) {
-        await ctx.db.insert("timelineEvents", { ...ev, shipmentId });
-      }
-    }
-
     await logAudit(ctx, "shipment.created", adminId, {
       shipmentId,
-      newValue: { trackingCode, status: args.status ?? "Created" },
+      newValue: { trackingCode, status: args.status ?? "Shipment Registered" },
     });
 
     await ctx.scheduler.runAfter(0, internal.emails.sendStatusEmail, {
       trackingCode,
-      status: args.status ?? "Created",
+      status: args.status ?? "Shipment Registered",
       senderName: args.senderFullName,
       senderEmail: args.senderEmail,
       receiverName: args.receiverFullName,
@@ -521,13 +491,12 @@ export const deleteShipment = mutation({
     if (!existing) throw new Error("Shipment not found");
 
     // Cascade delete related records
-    const [items, checkpoints, timeline] = await Promise.all([
+    const [items, checkpoints] = await Promise.all([
       ctx.db.query("shipmentItems").withIndex("by_shipment", (q) => q.eq("shipmentId", id)).collect(),
       ctx.db.query("routeCheckpoints").withIndex("by_shipment", (q) => q.eq("shipmentId", id)).collect(),
-      ctx.db.query("timelineEvents").withIndex("by_shipment", (q) => q.eq("shipmentId", id)).collect(),
     ]);
 
-    for (const item of [...items, ...checkpoints, ...timeline]) {
+    for (const item of [...items, ...checkpoints]) {
       await ctx.db.delete(item._id);
     }
 
@@ -542,20 +511,20 @@ export const deleteShipment = mutation({
 
 // ─── Internal: Auto-archive cron target ─────────────────────────────────────
 
-export const autoArchiveDelivered = internalMutation({
+export const autoArchiveHeldAtAirport = internalMutation({
   args: {},
   handler: async (ctx) => {
     const ninetyDaysAgo = new Date(
       Date.now() - 90 * 24 * 60 * 60 * 1000
     ).toISOString();
 
-    const delivered = await ctx.db
+    const heldAtAirport = await ctx.db
       .query("shipments")
-      .withIndex("by_status", (q) => q.eq("status", "Delivered"))
+      .withIndex("by_status", (q) => q.eq("status", "Held at the Airport"))
       .collect();
 
     let archived = 0;
-    for (const s of delivered) {
+    for (const s of heldAtAirport) {
       if (!s.archived && s.updatedAt < ninetyDaysAgo) {
         await ctx.db.patch(s._id, {
           archived: true,

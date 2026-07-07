@@ -40,7 +40,6 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
   const router = useRouter();
   const createShipment = useMutation(api.shipments.createShipment);
   const updateShipment = useMutation(api.shipments.updateShipment);
-  const replaceTimeline = useMutation(api.timelines.replaceTimelineEvents);
   const replaceCheckpoints = useMutation(api.routes.replaceRouteCheckpoints);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,7 +50,7 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
   async function handleSubmit() {
     setIsSubmitting(true);
     try {
-      const { sender, receiver, items, pricing, checkpoints, timelineEvents } = data;
+      const { sender, receiver, items, pricing, checkpoints } = data;
 
       const checkpointArgs =
         checkpoints.length >= 2
@@ -60,18 +59,6 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
               country: cp.country,
               latitude: cp.latitude,
               longitude: cp.longitude,
-              sequence: i + 1,
-            }))
-          : undefined;
-
-      const timelineArgs =
-        timelineEvents.length > 0
-          ? timelineEvents.map((ev, i) => ({
-              title: ev.title,
-              description: ev.description || undefined,
-              location: ev.location || undefined,
-              eventDate: ev.eventDate,
-              status: ev.status,
               sequence: i + 1,
             }))
           : undefined;
@@ -117,11 +104,7 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
           height: Number(pricing.height),
         });
 
-        // Replace timeline and checkpoints
-        await replaceTimeline({
-          shipmentId: editShipmentId,
-          events: timelineArgs ?? [],
-        });
+        // Replace checkpoints
         await replaceCheckpoints({
           shipmentId: editShipmentId,
           checkpoints: checkpointArgs ?? [],
@@ -149,7 +132,7 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
           receiverCountry: receiver.country,
           receiverPostalCode: receiver.postalCode,
           shipmentType: pricing.shipmentType,
-          status: pricing.status || "Created",
+          status: pricing.status || "Shipment Registered",
           dispatchDate: pricing.dispatchDate || undefined,
           estimatedDeliveryDate: pricing.estimatedDeliveryDate || undefined,
           shippingCost: Number(pricing.shippingCost),
@@ -162,13 +145,15 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
           height: Number(pricing.height),
           items: itemArgs,
           checkpoints: checkpointArgs,
-          timelineEvents: timelineArgs,
         });
         setCreatedCode(result.trackingCode);
         toast.success("Shipment created successfully!");
       }
     } catch (err) {
-      toast.error(isEdit ? "Failed to update shipment." : "Failed to create shipment.");
+      const message = err instanceof Error ? err.message : String(err);
+      toast.error(
+        `${isEdit ? "Failed to update shipment" : "Failed to create shipment"}: ${message}`
+      );
       console.error(err);
     } finally {
       setIsSubmitting(false);
@@ -216,7 +201,7 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
     );
   }
 
-  const { sender, receiver, items, pricing, checkpoints, timelineEvents } = data;
+  const { sender, receiver, items, pricing, checkpoints } = data;
 
   return (
     <div className="space-y-6">
@@ -280,21 +265,6 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
               <div key={cp.id} className="text-sm flex items-center gap-2">
                 <span className="text-xs font-bold text-muted-foreground w-4">{i + 1}</span>
                 <span>{cp.cityName}, {cp.country}</span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {timelineEvents.length > 0 && (
-          <div className="rounded-lg border p-4 space-y-2">
-            <SectionLabel>Timeline ({timelineEvents.length} events)</SectionLabel>
-            {timelineEvents.map((ev, i) => (
-              <div key={ev.id} className={cn("text-sm", i > 0 && "pt-2 border-t")}>
-                <p className="font-medium">{ev.title}</p>
-                <p className="text-muted-foreground text-xs">
-                  {ev.eventDate} · {ev.status}
-                  {ev.location ? ` · ${ev.location}` : ""}
-                </p>
               </div>
             ))}
           </div>

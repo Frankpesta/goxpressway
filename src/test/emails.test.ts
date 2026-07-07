@@ -6,19 +6,9 @@ const NAME = "Alice Smith";
 const OPTS = { senderCity: "London", receiverCity: "New York", estimatedDeliveryDate: "2026-07-05" };
 
 describe("getStatusEmailContent — subject lines", () => {
-  it("Created", () => {
-    const { subject } = getStatusEmailContent("Created", NAME, CODE);
-    expect(subject).toBe(`Shipment Created — ${CODE}`);
-  });
-
-  it("Pending Pickup", () => {
-    const { subject } = getStatusEmailContent("Pending Pickup", NAME, CODE);
-    expect(subject).toBe(`Pending Pickup — ${CODE}`);
-  });
-
-  it("Picked Up", () => {
-    const { subject } = getStatusEmailContent("Picked Up", NAME, CODE);
-    expect(subject).toBe(`Shipment Picked Up — ${CODE}`);
+  it("Shipment Registered", () => {
+    const { subject } = getStatusEmailContent("Shipment Registered", NAME, CODE);
+    expect(subject).toBe(`Shipment Registered — ${CODE}`);
   });
 
   it("In Transit", () => {
@@ -26,29 +16,9 @@ describe("getStatusEmailContent — subject lines", () => {
     expect(subject).toBe(`In Transit — ${CODE}`);
   });
 
-  it("At Facility", () => {
-    const { subject } = getStatusEmailContent("At Facility", NAME, CODE);
-    expect(subject).toBe(`Arrived at Facility — ${CODE}`);
-  });
-
-  it("Out for Delivery", () => {
-    const { subject } = getStatusEmailContent("Out for Delivery", NAME, CODE);
-    expect(subject).toBe(`Out for Delivery — ${CODE}`);
-  });
-
-  it("Delivered", () => {
-    const { subject } = getStatusEmailContent("Delivered", NAME, CODE);
-    expect(subject).toBe(`Delivered — ${CODE}`);
-  });
-
-  it("Failed", () => {
-    const { subject } = getStatusEmailContent("Failed", NAME, CODE);
-    expect(subject).toBe(`Delivery Attempt Failed — ${CODE}`);
-  });
-
-  it("Returned", () => {
-    const { subject } = getStatusEmailContent("Returned", NAME, CODE);
-    expect(subject).toBe(`Shipment Returned — ${CODE}`);
+  it("Held at the Airport", () => {
+    const { subject } = getStatusEmailContent("Held at the Airport", NAME, CODE);
+    expect(subject).toBe(`Held at the Airport — ${CODE}`);
   });
 
   it("unknown status falls back gracefully", () => {
@@ -58,14 +28,14 @@ describe("getStatusEmailContent — subject lines", () => {
 });
 
 describe("getStatusEmailContent — heading", () => {
-  it("Created heading is correct", () => {
-    const { heading } = getStatusEmailContent("Created", NAME, CODE);
-    expect(heading).toBe("Your shipment has been created");
+  it("Shipment Registered heading is correct", () => {
+    const { heading } = getStatusEmailContent("Shipment Registered", NAME, CODE);
+    expect(heading).toBe("Your shipment has been registered");
   });
 
-  it("Delivered heading is correct", () => {
-    const { heading } = getStatusEmailContent("Delivered", NAME, CODE);
-    expect(heading).toBe("Your shipment has been delivered");
+  it("Held at the Airport heading is correct", () => {
+    const { heading } = getStatusEmailContent("Held at the Airport", NAME, CODE);
+    expect(heading).toBe("Your shipment is being held at the airport");
   });
 
   it("unknown status heading mentions the status", () => {
@@ -76,7 +46,7 @@ describe("getStatusEmailContent — heading", () => {
 
 describe("getStatusEmailContent — bodyHtml", () => {
   it("includes recipient name in greeting", () => {
-    const { bodyHtml } = getStatusEmailContent("Created", "Bob Jones", CODE);
+    const { bodyHtml } = getStatusEmailContent("Shipment Registered", "Bob Jones", CODE);
     expect(bodyHtml).toContain("Bob Jones");
   });
 
@@ -92,28 +62,18 @@ describe("getStatusEmailContent — bodyHtml", () => {
   });
 
   it("omits route line when cities not provided", () => {
-    const { bodyHtml } = getStatusEmailContent("Created", NAME, CODE);
+    const { bodyHtml } = getStatusEmailContent("Shipment Registered", NAME, CODE);
     expect(bodyHtml).not.toContain("&rarr;");
   });
 
   it("omits delivery line when estimatedDeliveryDate not provided", () => {
-    const { bodyHtml } = getStatusEmailContent("Created", NAME, CODE);
+    const { bodyHtml } = getStatusEmailContent("Shipment Registered", NAME, CODE);
     expect(bodyHtml).not.toContain("Estimated delivery:");
   });
 });
 
 describe("getStatusEmailContent — trigger conditions", () => {
-  const statuses = [
-    "Created",
-    "Pending Pickup",
-    "Picked Up",
-    "In Transit",
-    "At Facility",
-    "Out for Delivery",
-    "Delivered",
-    "Failed",
-    "Returned",
-  ];
+  const statuses = ["Shipment Registered", "In Transit", "Held at the Airport"];
 
   it.each(statuses)("produces a non-empty subject for '%s'", (status) => {
     const { subject } = getStatusEmailContent(status, NAME, CODE);

@@ -32,19 +32,12 @@ type StatusConfig = {
 };
 
 const STATUS_CONFIG: Record<string, StatusConfig> = {
-  Created: {
-    heading: "Your shipment has been created",
+  "Shipment Registered": {
+    heading: "Your shipment has been registered",
     detail:
       "We've registered your shipment and assigned it a unique tracking number. Use the button below at any time to check real-time status updates.",
     accent: "#475569",
     icon: "📦",
-  },
-  "Picked Up": {
-    heading: "Your shipment has been picked up",
-    detail:
-      "Your package is now in our hands. Our courier has collected it and it's been logged into our logistics network. We'll keep you updated as it moves.",
-    accent: "#2563eb",
-    icon: "🚚",
   },
   "In Transit": {
     heading: "Your shipment is on its way",
@@ -53,47 +46,12 @@ const STATUS_CONFIG: Record<string, StatusConfig> = {
     accent: "#d97706",
     icon: "✈️",
   },
-  "Arrived At Facility": {
-    heading: "Your shipment has arrived at a facility",
+  "Held at the Airport": {
+    heading: "Your shipment is being held at the airport",
     detail:
-      "Your package has reached one of our processing facilities and is being prepared for the next leg of its journey. Expect the next update soon.",
+      "Your package is currently held at an airport facility. We'll notify you as soon as it clears customs and continues its journey.",
     accent: "#7c3aed",
-    icon: "🏭",
-  },
-  "Out For Delivery": {
-    heading: "Your shipment is out for delivery today",
-    detail:
-      "Exciting news — your package is with a delivery courier right now and on its way to the destination address. Expect delivery today!",
-    accent: "#ea580c",
-    icon: "🛵",
-  },
-  Delivered: {
-    heading: "Your shipment has been delivered",
-    detail:
-      "Your package was successfully delivered. We hope everything arrived in perfect condition. Thank you for choosing GOxpress Way — we'd love to serve you again.",
-    accent: "#16a34a",
-    icon: "✅",
-  },
-  "Failed Delivery": {
-    heading: "Delivery attempt was unsuccessful",
-    detail:
-      "We were unable to complete the delivery. Our courier will make another attempt, or please contact us to arrange a more convenient delivery time or location.",
-    accent: "#dc2626",
-    icon: "⚠️",
-  },
-  Returned: {
-    heading: "Your shipment is being returned",
-    detail:
-      "Your package is on its way back to the sender. If you'd like to arrange re-delivery or have questions about the return, please contact our support team.",
-    accent: "#be123c",
-    icon: "↩️",
-  },
-  Cancelled: {
-    heading: "Your shipment has been cancelled",
-    detail:
-      "This shipment has been cancelled. If you believe this is an error or need to arrange a new shipment, please contact our support team right away.",
-    accent: "#9f1239",
-    icon: "❌",
+    icon: "🛬",
   },
 };
 

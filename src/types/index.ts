@@ -4,15 +4,9 @@ export type UserId = string;
 export type AuditLogId = string;
 
 export type ShipmentStatus =
-  | "Created"
-  | "Picked Up"
+  | "Shipment Registered"
   | "In Transit"
-  | "Arrived At Facility"
-  | "Out For Delivery"
-  | "Delivered"
-  | "Failed Delivery"
-  | "Returned"
-  | "Cancelled"
+  | "Held at the Airport"
   | string; // custom statuses
 
 export type ShipmentType = "Express" | "Standard" | "Freight" | "International";
@@ -54,15 +48,6 @@ export interface RouteCheckpoint {
   longitude: number;
   sequence: number;
   arrivalStatus?: "arrived" | "pending" | "current";
-}
-
-export interface TimelineEvent {
-  title: string;
-  description?: string;
-  location?: string;
-  eventDate: string;
-  status: ShipmentStatus;
-  sequence: number;
 }
 
 export interface Shipment {
@@ -113,10 +98,9 @@ export interface AuditLog {
 
 export interface DashboardMetrics {
   totalShipments: number;
-  activeShipments: number;
-  deliveredShipments: number;
   archivedShipments: number;
+  registeredShipments: number;
   inTransitShipments: number;
-  failedDeliveries: number;
+  heldAtAirportShipments: number;
   totalRevenue: number;
 }

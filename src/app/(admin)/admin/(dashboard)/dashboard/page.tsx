@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   Archive,
   Truck,
-  AlertTriangle,
   DollarSign,
   ArrowRight,
   Clock,
@@ -18,15 +17,9 @@ import {
 // ── Status badge helper ───────────────────────────────────────────────────────
 
 const STATUS_STYLES: Record<string, string> = {
-  Created: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
-  "Pending Pickup": "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300",
-  "Picked Up": "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300",
+  "Shipment Registered": "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
   "In Transit": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300",
-  "Arrived At Facility": "bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300",
-  "Out For Delivery": "bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300",
-  Delivered: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300",
-  "Failed Delivery": "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300",
-  Returned: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+  "Held at the Airport": "bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300",
 };
 
 function StatusBadge({ status }: { status: string }) {
@@ -99,10 +92,9 @@ export default function DashboardPage() {
 
   const STAT_CARDS = [
     { label: "Total Shipments", value: metrics?.totalShipments, icon: Package, color: "#2563eb" },
-    { label: "Active Shipments", value: metrics?.activeShipments, icon: TrendingUp, color: "#d97706" },
-    { label: "Delivered", value: metrics?.deliveredShipments, icon: CheckCircle2, color: "#16a34a" },
+    { label: "Shipment Registered", value: metrics?.registeredShipments, icon: TrendingUp, color: "#475569" },
     { label: "In Transit", value: metrics?.inTransitShipments, icon: Truck, color: "#7c3aed" },
-    { label: "Failed Deliveries", value: metrics?.failedDeliveries, icon: AlertTriangle, color: "#dc2626" },
+    { label: "Held at the Airport", value: metrics?.heldAtAirportShipments, icon: CheckCircle2, color: "#a855f7" },
     { label: "Archived", value: metrics?.archivedShipments, icon: Archive, color: "#64748b" },
     {
       label: "Total Revenue",
