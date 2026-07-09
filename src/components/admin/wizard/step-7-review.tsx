@@ -171,6 +171,7 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
         {/* Print CSS — hide admin chrome and on-screen success UI, show only the sender's copy */}
         <style>{`
           @media print {
+            @page { margin: 11mm; size: A4; }
             [data-sidebar] { display: none !important; }
             aside { display: none !important; }
             .admin-header-print-hide { display: none !important; }
@@ -221,7 +222,7 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
 
         {/* Sender's copy — screen-hidden, shown only when printing/saving as PDF */}
         <div className="hidden print:block text-slate-900">
-          <div className="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-navy">
                 <Package className="h-5 w-5 text-white" />
@@ -236,15 +237,15 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
             </div>
           </div>
 
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-xs text-slate-500 uppercase tracking-wide">Tracking Code</p>
               <p className="text-2xl font-mono font-black">{createdCode}</p>
             </div>
-            <QrCodeDisplay url={publicUrl} trackingCode={createdCode} size={100} />
+            <QrCodeDisplay url={publicUrl} trackingCode={createdCode} size={80} />
           </div>
 
-          <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-2 gap-6 mb-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Sender</p>
               <p className="font-semibold">{sender.fullName}</p>
@@ -265,7 +266,7 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
             </div>
           </div>
 
-          <div className="mb-6">
+          <div className="mb-4">
             <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Shipment Details</p>
             <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
               <div>Type: <span className="font-semibold">{pricing.shipmentType}</span></div>
@@ -278,12 +279,12 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
           </div>
 
           {items.length > 0 && (
-            <div className="mb-6">
+            <div className="mb-4">
               <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">
                 Items ({items.length})
               </p>
               {items.map((item) => (
-                <div key={item.id} className="text-sm border-b border-slate-100 py-1.5">
+                <div key={item.id} className="text-sm border-b border-slate-100 py-1">
                   <span className="font-medium">{item.itemName}</span> — Qty {item.quantity} ·{" "}
                   {item.weight} kg · ${item.declaredValue} declared
                 </div>
@@ -291,7 +292,7 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
             </div>
           )}
 
-          <div className="mb-6">
+          <div className="mb-4">
             <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Cost Breakdown</p>
             <div className="text-sm space-y-1 max-w-xs">
               <div className="flex justify-between">
@@ -313,7 +314,7 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
             </div>
           </div>
 
-          <p className="text-[10px] text-slate-400 mt-8">
+          <p className="text-[10px] text-slate-400 mt-4">
             Keep this receipt for your records. Track this shipment anytime at {publicUrl}
           </p>
         </div>

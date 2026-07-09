@@ -115,8 +115,8 @@ function StatusText({ status }: { status: string }) {
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex gap-3 py-2 text-sm border-b border-border/50 last:border-0 print:border-slate-200">
-      <span className="w-36 shrink-0 text-muted-foreground font-medium print:text-slate-600">{label}</span>
+    <div className="flex gap-3 py-2 print:py-1 text-sm print:text-xs border-b border-border/50 last:border-0 print:border-slate-200">
+      <span className="w-36 print:w-28 shrink-0 text-muted-foreground font-medium print:text-slate-600">{label}</span>
       <span className="font-semibold break-all print:text-slate-900">{value}</span>
     </div>
   );
@@ -126,14 +126,14 @@ function Card({ title, icon: Icon, children, className }: {
   title?: string; icon?: React.ElementType; children: React.ReactNode; className?: string;
 }) {
   return (
-    <div className={cn("rounded-2xl border bg-card shadow-sm print:border-slate-200 print:shadow-none print:rounded-xl", className)}>
+    <div className={cn("rounded-2xl border bg-card shadow-sm print:border-slate-200 print:shadow-none print:rounded-lg", className)}>
       {title && (
-        <div className="flex items-center gap-2 border-b px-6 py-4 print:border-slate-200">
+        <div className="flex items-center gap-2 border-b px-6 py-4 print:border-slate-200 print:px-4 print:py-2">
           {Icon && <Icon className="h-4 w-4 text-muted-foreground print:text-slate-500" />}
-          <h2 className="text-sm font-black uppercase tracking-wide text-muted-foreground print:text-slate-600">{title}</h2>
+          <h2 className="text-sm font-black uppercase tracking-wide text-muted-foreground print:text-[11px]">{title}</h2>
         </div>
       )}
-      <div className="p-6">{children}</div>
+      <div className="p-6 print:p-3">{children}</div>
     </div>
   );
 }
@@ -262,7 +262,7 @@ export default function PublicTrackingPage({
       {/* ── Print stylesheet ── */}
       <style>{`
         @media print {
-          @page { margin: 16mm; size: A4; }
+          @page { margin: 11mm; size: A4; }
 
           body, html { background: #ffffff !important; }
 
@@ -301,7 +301,7 @@ export default function PublicTrackingPage({
       `}</style>
 
       {/* ── Print-only document header ── */}
-      <div className="hidden print:flex items-center justify-between border-b border-slate-200 pb-4 mb-8 px-0">
+      <div className="hidden print:flex items-center justify-between border-b border-slate-200 print:pb-2 print:mb-3 px-0">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-navy">
             <Package className="h-5 w-5 text-white" />
@@ -361,7 +361,7 @@ export default function PublicTrackingPage({
       </header>
 
       <main className="bg-muted/20 min-h-screen">
-        <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 space-y-5">
+        <div className="mx-auto max-w-5xl px-4 py-8 print:py-0 sm:px-6 space-y-5 print:space-y-2">
 
           {shipment === undefined ? (
             <TrackingPageSkeleton />
@@ -398,16 +398,16 @@ export default function PublicTrackingPage({
                 className="status-hero-print relative overflow-hidden rounded-2xl bg-brand-navy text-white shadow-2xl no-break"
               >
                 <div className="decorative-overlay absolute inset-0 bg-[linear-gradient(135deg,rgba(255,109,0,0.18)_0%,transparent_50%,rgba(255,255,255,0.03)_100%)]" />
-                <div className="relative p-7 sm:p-9">
-                  <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="relative p-7 sm:p-9 print:p-4">
+                  <div className="flex flex-wrap items-start justify-between gap-4 print:gap-2">
                     <div className="flex-1 min-w-0">
                       <div className="mb-1">
                         <span className="font-mono text-xs font-bold tracking-widest text-white/50 uppercase print:text-slate-400">
                           Tracking Code
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 mb-5">
-                        <span className="font-mono text-2xl font-black tracking-widest sm:text-3xl print:text-slate-900">
+                      <div className="flex items-center gap-2 mb-5 print:mb-2">
+                        <span className="font-mono text-2xl font-black tracking-widest sm:text-3xl print:text-xl print:text-slate-900">
                           {trackingCode}
                         </span>
                         <button
@@ -434,7 +434,7 @@ export default function PublicTrackingPage({
                   </div>
 
                   {/* Route */}
-                  <div className="mt-6 flex flex-wrap items-center gap-3 text-sm">
+                  <div className="mt-6 print:mt-3 flex flex-wrap items-center gap-3 text-sm">
                     <div className="flex items-center gap-1.5">
                       <MapPin className="h-4 w-4 text-brand-orange shrink-0 print:text-slate-500" />
                       <span className="font-black text-white print:text-slate-900">
@@ -452,7 +452,7 @@ export default function PublicTrackingPage({
 
                   {/* ETA */}
                   {shipment.estimatedDeliveryDate && (
-                    <div className="mt-4 flex items-center gap-2 rounded-xl border border-white/10 bg-white/8 px-4 py-3 text-sm w-fit print:border-slate-200 print:bg-slate-50">
+                    <div className="mt-4 print:mt-2 flex items-center gap-2 rounded-xl border border-white/10 bg-white/8 px-4 py-3 print:px-3 print:py-1.5 text-sm w-fit print:border-slate-200 print:bg-slate-50">
                       <Calendar className="h-4 w-4 text-brand-orange shrink-0 print:text-slate-500" />
                       <span className="text-white/60 print:text-slate-500">Estimated Delivery</span>
                       <span className="font-black text-white print:text-slate-900">{shipment.estimatedDeliveryDate}</span>
@@ -474,7 +474,7 @@ export default function PublicTrackingPage({
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="rounded-2xl border bg-card p-5 shadow-sm no-break"
+                className="print:hidden rounded-2xl border bg-card p-5 shadow-sm no-break"
               >
                 <h2 className="mb-4 text-xs font-black uppercase tracking-wide text-muted-foreground">
                   Delivery Journey
@@ -586,14 +586,14 @@ export default function PublicTrackingPage({
                   className="no-break"
                 >
                   <Card title={`Package Contents (${shipment.items.length} item${shipment.items.length !== 1 ? "s" : ""})`} icon={Package}>
-                    <div className="space-y-3">
+                    <div className="space-y-3 print:space-y-1.5">
                       {shipment.items.map((item, i) => (
-                        <div key={item._id} className={cn("flex items-start gap-4 text-sm", i > 0 && "border-t pt-3 print:border-slate-200")}>
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-navy/10 print:border print:border-slate-200 print:bg-slate-50">
-                            <Package className="h-4 w-4 text-brand-navy print:text-slate-600" />
+                        <div key={item._id} className={cn("flex items-start gap-4 print:gap-2 text-sm", i > 0 && "border-t pt-3 print:pt-1.5 print:border-slate-200")}>
+                          <div className="flex h-9 w-9 print:h-6 print:w-6 shrink-0 items-center justify-center rounded-lg bg-brand-navy/10 print:border print:border-slate-200 print:bg-slate-50">
+                            <Package className="h-4 w-4 print:h-3 print:w-3 text-brand-navy print:text-slate-600" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-black print:text-slate-900">{item.itemName}</p>
+                            <p className="font-black print:text-xs print:text-slate-900">{item.itemName}</p>
                             <p className="text-xs text-muted-foreground mt-0.5 print:text-slate-600">
                               Qty: {item.quantity} · {item.weight} kg
                               {item.description ? ` · ${item.description}` : ""}
@@ -682,18 +682,18 @@ export default function PublicTrackingPage({
                 className="qr-print-section no-break"
               >
                 <Card title="Scan & Share">
-                  <div className="flex flex-col sm:flex-row items-center gap-6">
+                  <div className="flex flex-col sm:flex-row items-center gap-6 print:gap-3">
                     {/* QR renders as an <img> with data URL — prints correctly */}
-                    <div className="shrink-0">
+                    <div className="shrink-0 print:[&_img]:h-20 print:[&_img]:w-20">
                       <QrCodeDisplay
                         url={shipment.qrCodeUrl ?? trackingUrl}
                         trackingCode={trackingCode}
                         size={160}
                       />
                     </div>
-                    <div className="flex-1 space-y-3 text-sm text-center sm:text-left">
-                      <p className="font-black text-base print:text-slate-900">Quick Access QR Code</p>
-                      <p className="text-muted-foreground leading-6 print:text-slate-600">
+                    <div className="flex-1 space-y-3 print:space-y-1 text-sm text-center sm:text-left">
+                      <p className="font-black text-base print:text-sm print:text-slate-900">Quick Access QR Code</p>
+                      <p className="text-muted-foreground leading-6 print:hidden print:text-slate-600">
                         Scan this code with any phone camera to open this tracking page instantly — no typing required.
                       </p>
                       <p className="font-mono text-xs break-all text-muted-foreground print:text-slate-500">{trackingUrl}</p>

@@ -1,5 +1,6 @@
 // Public layout — header + footer added in Phase 9
 import Script from "next/script";
+import { WhatsAppWidget } from "@/components/public/whatsapp-widget";
 
 export default function PublicLayout({
   children,
@@ -9,6 +10,7 @@ export default function PublicLayout({
   return (
     <>
       {children}
+      <WhatsAppWidget />
       <Script id="livechat" strategy="lazyOnload">
         {`
           window.__lc = window.__lc || {};

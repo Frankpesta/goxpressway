@@ -41,8 +41,8 @@ function SectionCard({
   className?: string;
 }) {
   return (
-    <div className={`rounded-xl border bg-card p-5 space-y-3 ${className}`}>
-      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+    <div className={`rounded-xl border bg-card p-5 print:p-3 space-y-3 print:space-y-1.5 ${className}`}>
+      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide print:text-[11px]">
         {title}
       </h3>
       {children}
@@ -53,8 +53,8 @@ function SectionCard({
 function InfoRow({ label, value }: { label: string; value?: string | number | null }) {
   if (!value && value !== 0) return null;
   return (
-    <div className="flex gap-2 text-sm">
-      <span className="text-muted-foreground w-32 shrink-0">{label}</span>
+    <div className="flex gap-2 text-sm print:text-xs">
+      <span className="text-muted-foreground w-32 print:w-24 shrink-0">{label}</span>
       <span className="font-medium break-all">{value}</span>
     </div>
   );
@@ -130,6 +130,7 @@ export default function ShipmentDetailPage({ params }: PageProps) {
       {/* Print CSS — hide admin chrome when printing */}
       <style>{`
         @media print {
+          @page { margin: 11mm; size: A4; }
           [data-sidebar] { display: none !important; }
           aside { display: none !important; }
           .admin-header-print-hide { display: none !important; }
@@ -138,9 +139,9 @@ export default function ShipmentDetailPage({ params }: PageProps) {
         }
       `}</style>
 
-    <div className="p-6 space-y-6 max-w-5xl">
+    <div className="p-6 print:p-0 space-y-6 print:space-y-3 max-w-5xl">
       {/* Print-only header */}
-      <div className="hidden print:flex items-center gap-3 mb-6 pb-4 border-b">
+      <div className="hidden print:flex items-center gap-3 print:mb-3 print:pb-2 border-b">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-navy">
           <Package className="h-5 w-5 text-white" />
         </div>
@@ -235,7 +236,7 @@ export default function ShipmentDetailPage({ params }: PageProps) {
       </div>
 
       {/* Sender + Receiver */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 print:gap-3">
         <SectionCard title="Sender">
           <InfoRow label="Name" value={shipment.senderFullName} />
           <InfoRow label="Email" value={shipment.senderEmail} />
@@ -262,8 +263,8 @@ export default function ShipmentDetailPage({ params }: PageProps) {
       </div>
 
       {/* Shipment details + QR */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="sm:col-span-2 space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 print:gap-3">
+        <div className="sm:col-span-2 space-y-4 print:space-y-2">
           <SectionCard title="Shipment Details">
             <InfoRow label="Type" value={shipment.shipmentType} />
             <InfoRow label="Status" value={shipment.status} />
@@ -283,18 +284,18 @@ export default function ShipmentDetailPage({ params }: PageProps) {
             <InfoRow label="Shipping" value={`$${shipment.shippingCost}`} />
             <InfoRow label="Tax" value={`$${shipment.tax}`} />
             <InfoRow label="Insurance" value={`$${shipment.insurance}`} />
-            <div className="border-t pt-2 mt-2">
+            <div className="border-t pt-2 print:pt-1 mt-2 print:mt-1">
               <InfoRow label="Total Cost" value={`$${shipment.totalCost}`} />
             </div>
           </SectionCard>
         </div>
 
-        <SectionCard title="QR Code" className="flex flex-col items-center justify-start">
+        <SectionCard title="QR Code" className="flex flex-col items-center justify-start print:[&_img]:h-20 print:[&_img]:w-20">
           <QrCodeDisplay
             url={shipment.qrCodeUrl ?? ""}
             trackingCode={shipment.trackingCode}
           />
-          <p className="text-xs text-muted-foreground text-center mt-2">
+          <p className="text-xs text-muted-foreground text-center mt-2 print:hidden">
             Scan to track this shipment
           </p>
         </SectionCard>
@@ -303,17 +304,17 @@ export default function ShipmentDetailPage({ params }: PageProps) {
       {/* Items */}
       {items.length > 0 && (
         <SectionCard title={`Items (${items.length})`}>
-          <div className="space-y-3">
+          <div className="space-y-3 print:space-y-1.5">
             {items.map((item, i) => (
               <div
                 key={i}
-                className="flex items-start gap-3 text-sm border-b last:border-0 pb-3 last:pb-0"
+                className="flex items-start gap-3 print:gap-2 text-sm print:text-xs border-b last:border-0 pb-3 print:pb-1.5 last:pb-0"
               >
-                <Package className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
+                <Package className="h-4 w-4 print:h-3 print:w-3 mt-0.5 text-muted-foreground shrink-0" />
                 <div className="flex-1">
                   <p className="font-medium">{item.itemName}</p>
                   {item.description && (
-                    <p className="text-muted-foreground text-xs">{item.description}</p>
+                    <p className="text-muted-foreground text-xs print:hidden">{item.description}</p>
                   )}
                   <p className="text-muted-foreground text-xs mt-0.5">
                     Qty: {item.quantity} · {item.weight} kg ·{" "}
