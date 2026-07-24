@@ -34,7 +34,7 @@ import {
 import { StatusBadge } from "@/components/admin/shipments/status-badge";
 import { DeleteConfirmDialog } from "@/components/admin/shipments/delete-confirm-dialog";
 import { StatusUpdateDialog } from "@/components/admin/shipments/status-update-dialog";
-import { SHIPMENT_TYPES, SHIPMENT_STATUSES } from "@/types/wizard";
+import { SHIPMENT_TYPES } from "@/types/wizard";
 import {
   Plus,
   Search,
@@ -144,22 +144,12 @@ export default function ShipmentsPage() {
           />
         </div>
 
-        <Select
-          value={statusFilter}
-          onValueChange={(v) => setStatusFilter(v ?? "all")}
-        >
-          <SelectTrigger className="w-44">
-            <SelectValue placeholder="All statuses" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            {SHIPMENT_STATUSES.map((s) => (
-              <SelectItem key={s} value={s}>
-                {s}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Input
+          placeholder="Filter by status..."
+          value={statusFilter === "all" ? "" : statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value || "all")}
+          className="w-44"
+        />
 
         <Select
           value={typeFilter}

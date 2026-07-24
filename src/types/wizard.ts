@@ -11,7 +11,6 @@ export interface ContactData {
 
 export interface ItemFormData {
   id: string;
-  itemName: string;
   description: string;
   quantity: number;
   weight: number;
@@ -50,12 +49,6 @@ export interface WizardData {
 }
 
 export const SHIPMENT_TYPES = ["Express", "Standard", "Freight", "International"] as const;
-
-export const SHIPMENT_STATUSES = [
-  "Shipment Registered",
-  "In Transit",
-  "Held at the Airport",
-] as const;
 
 export const DEFAULT_SENDER: ContactData = {
   fullName: "",

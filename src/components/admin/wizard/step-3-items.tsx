@@ -18,8 +18,7 @@ import { Plus, Trash2, ArrowLeft, ArrowRight } from "lucide-react";
 
 const itemSchema = z.object({
   id: z.string(),
-  itemName: z.string().min(1, "Item name is required"),
-  description: z.string(),
+  description: z.string().min(1, "Describe what's in this item"),
   quantity: z.number().min(1, "Quantity must be at least 1"),
   weight: z.number().min(0.01, "Weight must be greater than 0"),
   declaredValue: z.number().min(0, "Value must be 0 or more"),
@@ -40,7 +39,6 @@ interface Props {
 function newItem(): ItemFormData {
   return {
     id: crypto.randomUUID(),
-    itemName: "",
     description: "",
     quantity: 1,
     weight: 0,
@@ -101,18 +99,23 @@ export function Step3Items({ data, onComplete, onBack }: Props) {
                   )}
                 </div>
 
+                <FormField
+                  control={form.control}
+                  name={`items.${index}.description`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>What&apos;s in this item?</FormLabel>
+                      <Textarea
+                        placeholder="e.g. 2 laptops, 3 phone chargers, and a power bank"
+                        rows={2}
+                        {...field}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name={`items.${index}.itemName`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Item Name</FormLabel>
-                        <Input placeholder="Electronics, Clothing..." {...field} />
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                   <FormField
                     control={form.control}
                     name={`items.${index}.quantity`}
@@ -160,24 +163,6 @@ export function Step3Items({ data, onComplete, onBack }: Props) {
                           min={0}
                           value={field.value}
                           onChange={(e) => field.onChange(parseNum(e.target.value))}
-                        />
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name={`items.${index}.description`}
-                    render={({ field }) => (
-                      <FormItem className="sm:col-span-2">
-                        <FormLabel>
-                          Description{" "}
-                          <span className="text-muted-foreground">(optional)</span>
-                        </FormLabel>
-                        <Textarea
-                          placeholder="Brief description of the item..."
-                          rows={2}
-                          {...field}
                         />
                         <FormMessage />
                       </FormItem>

@@ -42,6 +42,7 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
   const createShipment = useMutation(api.shipments.createShipment);
   const updateShipment = useMutation(api.shipments.updateShipment);
   const replaceCheckpoints = useMutation(api.routes.replaceRouteCheckpoints);
+  const replaceItems = useMutation(api.shipments.replaceShipmentItems);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdCode, setCreatedCode] = useState<string | null>(null);
@@ -63,9 +64,8 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
             }))
           : undefined;
 
-      const itemArgs = items.map(({ itemName, description, quantity, weight, declaredValue }) => ({
-        itemName,
-        description: description || undefined,
+      const itemArgs = items.map(({ description, quantity, weight, declaredValue }) => ({
+        description,
         quantity: Number(quantity),
         weight: Number(weight),
         declaredValue: Number(declaredValue),
@@ -108,6 +108,12 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
         await replaceCheckpoints({
           shipmentId: editShipmentId,
           checkpoints: checkpointArgs ?? [],
+        });
+
+        // Replace items
+        await replaceItems({
+          shipmentId: editShipmentId,
+          items: itemArgs,
         });
 
         toast.success("Shipment updated successfully!");
@@ -285,7 +291,7 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
               </p>
               {items.map((item) => (
                 <div key={item.id} className="text-sm border-b border-slate-100 py-1">
-                  <span className="font-medium">{item.itemName}</span> — Qty {item.quantity} ·{" "}
+                  <span className="font-medium">{item.description}</span> — Qty {item.quantity} ·{" "}
                   {item.weight} kg · ${item.declaredValue} declared
                 </div>
               ))}
@@ -358,7 +364,7 @@ export function Step7Review({ data, onBack, editShipmentId, editTrackingCode }: 
           <SectionLabel>Items ({items.length})</SectionLabel>
           {items.map((item, i) => (
             <div key={item.id} className={cn("text-sm", i > 0 && "pt-2 border-t")}>
-              <p className="font-medium">{item.itemName}</p>
+              <p className="font-medium">{item.description}</p>
               <p className="text-muted-foreground text-xs">
                 Qty: {item.quantity} · {item.weight} kg · ${item.declaredValue} declared
               </p>

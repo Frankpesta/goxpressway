@@ -16,6 +16,7 @@ import type * as email_templates_status_email from "../email_templates/status_em
 import type * as emails from "../emails.js";
 import type * as http from "../http.js";
 import type * as lib_audit from "../lib/audit.js";
+import type * as lib_statusStyles from "../lib/statusStyles.js";
 import type * as lib_tracking from "../lib/tracking.js";
 import type * as routes from "../routes.js";
 import type * as shipments from "../shipments.js";
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   emails: typeof emails;
   http: typeof http;
   "lib/audit": typeof lib_audit;
+  "lib/statusStyles": typeof lib_statusStyles;
   "lib/tracking": typeof lib_tracking;
   routes: typeof routes;
   shipments: typeof shipments;

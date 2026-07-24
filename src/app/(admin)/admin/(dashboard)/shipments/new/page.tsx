@@ -71,8 +71,7 @@ function WizardPageInner() {
         },
         items: (existingShipment.items ?? []).map((item) => ({
           id: crypto.randomUUID(),
-          itemName: item.itemName,
-          description: item.description ?? "",
+          description: item.description,
           quantity: item.quantity,
           weight: item.weight,
           declaredValue: item.declaredValue,

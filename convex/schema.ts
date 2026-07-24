@@ -50,8 +50,7 @@ export default defineSchema({
 
   shipmentItems: defineTable({
     shipmentId: v.id("shipments"),
-    itemName: v.string(),
-    description: v.optional(v.string()),
+    description: v.string(),
     quantity: v.number(),
     weight: v.number(),
     declaredValue: v.number(),

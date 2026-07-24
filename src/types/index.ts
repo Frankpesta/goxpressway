@@ -34,8 +34,7 @@ export interface Receiver {
 }
 
 export interface ShipmentItem {
-  itemName: string;
-  description?: string;
+  description: string;
   quantity: number;
   weight: number;
   declaredValue: number;

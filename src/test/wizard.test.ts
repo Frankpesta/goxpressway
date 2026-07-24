@@ -59,8 +59,7 @@ describe("Contact schema validation", () => {
 // ── Item schema ──────────────────────────────────────────────────────────────
 const itemSchema = z.object({
   id: z.string(),
-  itemName: z.string().min(1, "Item name is required"),
-  description: z.string(),
+  description: z.string().min(1, "Describe what's in this item"),
   quantity: z.number().min(1, "Quantity must be at least 1"),
   weight: z.number().min(0.01, "Weight must be greater than 0"),
   declaredValue: z.number().min(0, "Value must be 0 or more"),
@@ -68,7 +67,6 @@ const itemSchema = z.object({
 
 const VALID_ITEM = {
   id: "abc123",
-  itemName: "Electronics",
   description: "Laptop",
   quantity: 2,
   weight: 1.5,
@@ -80,8 +78,8 @@ describe("Item schema validation", () => {
     expect(itemSchema.safeParse(VALID_ITEM).success).toBe(true);
   });
 
-  it("rejects empty item name", () => {
-    expect(itemSchema.safeParse({ ...VALID_ITEM, itemName: "" }).success).toBe(false);
+  it("rejects empty description", () => {
+    expect(itemSchema.safeParse({ ...VALID_ITEM, description: "" }).success).toBe(false);
   });
 
   it("rejects zero quantity", () => {

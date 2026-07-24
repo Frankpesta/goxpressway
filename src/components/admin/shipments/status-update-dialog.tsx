@@ -13,14 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { SHIPMENT_STATUSES } from "@/types/wizard";
+import { StatusInput } from "@/components/admin/shipments/status-input";
 import { Loader2 } from "lucide-react";
 
 interface Props {
@@ -41,14 +34,16 @@ export function StatusUpdateDialog({
   const updateStatus = useMutation(api.shipments.updateShipmentStatus);
 
   async function handleUpdate() {
-    if (status === currentStatus) {
+    const trimmed = status.trim();
+    if (!trimmed) return;
+    if (trimmed === currentStatus) {
       onOpenChange(false);
       return;
     }
     setLoading(true);
     try {
-      await updateStatus({ id: shipmentId, status });
-      toast.success(`Status updated to "${status}"`);
+      await updateStatus({ id: shipmentId, status: trimmed });
+      toast.success(`Status updated to "${trimmed}"`);
       onOpenChange(false);
     } catch {
       toast.error("Failed to update status.");
@@ -64,24 +59,13 @@ export function StatusUpdateDialog({
           <DialogTitle>Update Shipment Status</DialogTitle>
         </DialogHeader>
 
-        <Select value={status} onValueChange={(val) => setStatus(val ?? currentStatus)}>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {SHIPMENT_STATUSES.map((s) => (
-              <SelectItem key={s} value={s}>
-                {s}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <StatusInput value={status} onChange={setStatus} />
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={handleUpdate} disabled={loading}>
+          <Button onClick={handleUpdate} disabled={loading || !status.trim()}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Update
           </Button>

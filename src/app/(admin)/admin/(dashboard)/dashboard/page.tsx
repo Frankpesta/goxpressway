@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
+import { StatusBadge } from "@/components/admin/shipments/status-badge";
 import {
   Package,
   TrendingUp,
@@ -13,23 +14,6 @@ import {
   ArrowRight,
   Clock,
 } from "lucide-react";
-
-// ── Status badge helper ───────────────────────────────────────────────────────
-
-const STATUS_STYLES: Record<string, string> = {
-  "Shipment Registered": "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
-  "In Transit": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300",
-  "Held at the Airport": "bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300",
-};
-
-function StatusBadge({ status }: { status: string }) {
-  const cls = STATUS_STYLES[status] ?? "bg-muted text-muted-foreground";
-  return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${cls}`}>
-      {status}
-    </span>
-  );
-}
 
 // ── Stat Card ────────────────────────────────────────────────────────────────
 

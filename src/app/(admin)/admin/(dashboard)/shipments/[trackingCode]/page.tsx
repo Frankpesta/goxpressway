@@ -312,10 +312,7 @@ export default function ShipmentDetailPage({ params }: PageProps) {
               >
                 <Package className="h-4 w-4 print:h-3 print:w-3 mt-0.5 text-muted-foreground shrink-0" />
                 <div className="flex-1">
-                  <p className="font-medium">{item.itemName}</p>
-                  {item.description && (
-                    <p className="text-muted-foreground text-xs print:hidden">{item.description}</p>
-                  )}
+                  <p className="font-medium">{item.description}</p>
                   <p className="text-muted-foreground text-xs mt-0.5">
                     Qty: {item.quantity} · {item.weight} kg ·{" "}
                     ${item.declaredValue} declared

@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { getStatusStyle, KNOWN_STATUSES, type StatusIconKey } from "@convex/lib/statusStyles";
 
 const RouteMap = dynamic(
   () => import("@/components/public/route-map").then((m) => m.RouteMap),
@@ -36,46 +37,23 @@ const RouteMap = dynamic(
 
 /* ─── Status config ──────────────────────────────────────────────────────────── */
 
-type IndicatorStyle = {
-  dot: string;       // Tailwind bg class
-  dotHex: string;    // Hex for inline styles (border, etc.)
-  ring: string;      // Tailwind bg class for ping ring
-  pulse: boolean;
-  bg: string;        // Badge background Tailwind class
-  text: string;      // Badge text Tailwind class
-  icon: React.ElementType;
+const STATUS_ICONS: Record<StatusIconKey, React.ElementType> = {
+  package: Package,
+  truck: Truck,
+  check: CheckCircle2,
 };
 
-const STATUS_INDICATOR: Record<string, IndicatorStyle> = {
-  "Shipment Registered": {
-    dot: "bg-slate-400", dotHex: "#94a3b8",
-    ring: "bg-slate-300", pulse: false,
-    bg: "bg-slate-100 dark:bg-slate-800/60", text: "text-slate-700 dark:text-slate-300",
-    icon: Package,
-  },
-  "In Transit": {
-    dot: "bg-amber-500", dotHex: "#f59e0b",
-    ring: "bg-amber-400", pulse: true,
-    bg: "bg-amber-50 dark:bg-amber-900/30", text: "text-amber-700 dark:text-amber-400",
-    icon: Truck,
-  },
-  "Held at the Airport": {
-    dot: "bg-purple-500", dotHex: "#a855f7",
-    ring: "bg-purple-400", pulse: true,
-    bg: "bg-purple-50 dark:bg-purple-900/30", text: "text-purple-700 dark:text-purple-400",
-    icon: CheckCircle2,
-  },
-};
-
-function getIndicatorStyle(status: string): IndicatorStyle {
-  return (
-    STATUS_INDICATOR[status] ?? {
-      dot: "bg-slate-400", dotHex: "#94a3b8",
-      ring: "bg-slate-300", pulse: false,
-      bg: "bg-muted", text: "text-muted-foreground",
-      icon: Package,
-    }
-  );
+function getIndicatorStyle(status: string) {
+  const style = getStatusStyle(status);
+  return {
+    dot: style.dotBg,
+    dotHex: style.hex,
+    ring: style.ringBg,
+    pulse: style.pulse,
+    bg: style.badgeBg,
+    text: style.badgeText,
+    icon: STATUS_ICONS[style.icon],
+  };
 }
 
 /* ─── Shared components ──────────────────────────────────────────────────────── */
@@ -155,24 +133,18 @@ function TrackingPageSkeleton() {
 
 /* ─── Journey progress strip ─────────────────────────────────────────────────── */
 
-const JOURNEY = [
-  "Shipment Registered",
-  "In Transit",
-  "Held at the Airport",
-] as const;
-
 function JourneyStrip({ status }: { status: string }) {
-  const currentIdx = JOURNEY.indexOf(status as (typeof JOURNEY)[number]);
-  // If status isn't in JOURNEY, default to the first step
+  const currentIdx = KNOWN_STATUSES.indexOf(status as (typeof KNOWN_STATUSES)[number]);
+  // If status isn't one of the known pipeline stages, default to the first step
   const effectiveIdx = currentIdx === -1 ? 0 : currentIdx;
 
   return (
     <div className="overflow-x-auto py-1">
       <div className="flex min-w-max items-start gap-0">
-        {JOURNEY.map((step, i) => {
+        {KNOWN_STATUSES.map((step, i) => {
           const isDone = effectiveIdx > i;
           const isCurrent = effectiveIdx === i;
-          const isLast = i === JOURNEY.length - 1;
+          const isLast = i === KNOWN_STATUSES.length - 1;
           // Use the STEP's indicator style so each step gets its own color dot
           const ind = getIndicatorStyle(step);
 
@@ -593,10 +565,9 @@ export default function PublicTrackingPage({
                             <Package className="h-4 w-4 print:h-3 print:w-3 text-brand-navy print:text-slate-600" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-black print:text-xs print:text-slate-900">{item.itemName}</p>
+                            <p className="font-black print:text-xs print:text-slate-900">{item.description}</p>
                             <p className="text-xs text-muted-foreground mt-0.5 print:text-slate-600">
                               Qty: {item.quantity} · {item.weight} kg
-                              {item.description ? ` · ${item.description}` : ""}
                             </p>
                           </div>
                         </div>

@@ -20,12 +20,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PricingData, SHIPMENT_TYPES, SHIPMENT_STATUSES } from "@/types/wizard";
+import { StatusInput } from "@/components/admin/shipments/status-input";
+import { PricingData, SHIPMENT_TYPES } from "@/types/wizard";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const schema = z.object({
   shipmentType: z.string().min(1, "Select a shipment type"),
-  status: z.string().min(1, "Select a status"),
+  status: z.string().min(1, "Status is required"),
   dispatchDate: z.string(),
   estimatedDeliveryDate: z.string(),
   weight: z.number().min(0.01, "Total weight required"),
@@ -120,26 +121,14 @@ export function Step4Pricing({ data, onComplete, onBack }: Props) {
             <FormField
               control={form.control}
               name="status"
-              render={({ field, fieldState }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Initial Status</FormLabel>
-                  <Select
+                  <StatusInput
                     value={field.value}
-                    onValueChange={(val) => field.onChange(val ?? "")}
-                  >
-                    <SelectTrigger
-                      className={fieldState.error ? "border-destructive" : ""}
-                    >
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {SHIPMENT_STATUSES.map((s) => (
-                        <SelectItem key={s} value={s}>
-                          {s}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    onChange={field.onChange}
+                    placeholder="e.g. Shipment Registered"
+                  />
                   <FormMessage />
                 </FormItem>
               )}

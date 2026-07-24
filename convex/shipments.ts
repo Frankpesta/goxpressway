@@ -130,7 +130,11 @@ export const listShipments = query({
           .includes(filters.receiverName.toLowerCase())
       )
         return false;
-      if (filters?.status && s.status !== filters.status) return false;
+      if (
+        filters?.status &&
+        !s.status.toLowerCase().includes(filters.status.toLowerCase())
+      )
+        return false;
       if (filters?.shipmentType && s.shipmentType !== filters.shipmentType)
         return false;
       if (filters?.dateFrom && s.createdAt < filters.dateFrom) return false;
@@ -228,8 +232,7 @@ export const getAnalyticsData = query({
 // ─── Mutations ───────────────────────────────────────────────────────────────
 
 const shipmentItemValidator = v.object({
-  itemName: v.string(),
-  description: v.optional(v.string()),
+  description: v.string(),
   quantity: v.number(),
   weight: v.number(),
   declaredValue: v.number(),
@@ -407,6 +410,33 @@ export const updateShipment = mutation({
       shipmentId: id,
       previousValue: existing,
       newValue: updates,
+    });
+  },
+});
+
+/** Replaces all items for a shipment in one atomic operation */
+export const replaceShipmentItems = mutation({
+  args: {
+    shipmentId: v.id("shipments"),
+    items: v.array(shipmentItemValidator),
+  },
+  handler: async (ctx, { shipmentId, items }) => {
+    const adminId = await getAuthUserId(ctx);
+    if (!adminId) throw new Error("Not authenticated");
+
+    const existing = await ctx.db
+      .query("shipmentItems")
+      .withIndex("by_shipment", (q) => q.eq("shipmentId", shipmentId))
+      .collect();
+
+    for (const item of existing) await ctx.db.delete(item._id);
+    for (const item of items) {
+      await ctx.db.insert("shipmentItems", { ...item, shipmentId });
+    }
+
+    await logAudit(ctx, "shipment.items_updated", adminId, {
+      shipmentId,
+      newValue: { count: items.length },
     });
   },
 });

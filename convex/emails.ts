@@ -8,6 +8,7 @@ import React from "react";
 import { StatusEmail } from "./email_templates/status_email";
 import { ContactEmail } from "./email_templates/contact_email";
 import { trackingUrl } from "./lib/tracking";
+import { getStatusStyle } from "./lib/statusStyles";
 
 // ─── Template helpers — kept for unit tests ───────────────────────────────────
 
@@ -28,35 +29,33 @@ export function getStatusEmailContent(
     receiverCity?: string;
   } = {}
 ): StatusEmailContent {
-  type Config = { subject: string; heading: string; detail: string; accent: string };
+  type Copy = { subject: string; heading: string; detail: string };
 
-  const STATUS_CONFIG: Record<string, Config> = {
+  const STATUS_COPY: Record<string, Copy> = {
     "Shipment Registered": {
       subject: `Shipment Registered — ${trackingCode}`,
       heading: "Your shipment has been registered",
       detail: "We've registered your shipment. Use your tracking number at any time to see real-time status updates.",
-      accent: "#475569",
     },
     "In Transit": {
       subject: `In Transit — ${trackingCode}`,
       heading: "Your shipment is on its way",
       detail: "Your package is actively moving through our logistics network toward its destination.",
-      accent: "#4f46e5",
     },
     "Held at the Airport": {
       subject: `Held at the Airport — ${trackingCode}`,
       heading: "Your shipment is being held at the airport",
       detail: "Your package is currently held at an airport facility. We'll notify you as soon as it clears and continues its journey.",
-      accent: "#7c3aed",
     },
   };
 
-  const cfg: Config = STATUS_CONFIG[status] ?? {
+  const copy: Copy = STATUS_COPY[status] ?? {
     subject: `Shipment Update — ${trackingCode}`,
     heading: `Status update: ${status}`,
     detail: "There has been an update to your shipment. Check the tracking page for the latest information.",
-    accent: "#475569",
   };
+
+  const cfg = { ...copy, accent: getStatusStyle(status).hex };
 
   const routeLine =
     opts.senderCity && opts.receiverCity
